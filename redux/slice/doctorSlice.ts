@@ -2,6 +2,7 @@
 import { axiosInstance } from "@/api/axios/axios";
 import { endpoints } from "@/api/endpoints/endpoints";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { create } from "domain";
 import { Cookies } from "react-cookie";
 
@@ -15,7 +16,9 @@ const initialState = {
     success: false,
     doctorTotal: 0,
     appointmentList: [],
-    appointmentTotal: 0
+    appointmentTotal: 0,
+    acceptedAppointments: [],
+    cancelledAppointments:[]
 }
 
 const cookie = new Cookies()
@@ -111,7 +114,7 @@ export const appointmentList = createAsyncThunk(
     "appointmentList",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.appointmentList)
-        console.log(response)
+        console.log("appointment",response)
         return response.data
     }
 )
@@ -144,6 +147,15 @@ export const cancelAppointment = createAsyncThunk(
     }
 );
 
+export const acceptedAppointment = createAsyncThunk(
+    "acceptedAppointment",
+    async () => {
+        const response = await axiosInstance.get(endpoints.doctor.acceptedAppointment)
+        console.log("accept appointment" , response)
+        return response.data
+    }
+)
+
 
 export const doctorSlice = createSlice({
     name: "doctorSlice",
@@ -171,13 +183,18 @@ export const doctorSlice = createSlice({
 
             /*get department list*/
             .addCase(getDepartmentList.pending, (state, { payload }) => {
+                state.loading= true
 
             })
             .addCase(getDepartmentList.fulfilled, (state, { payload }) => {
+                state.loading=false
                 state.departmentList = payload.data;
 
+
             })
-            .addCase(getDepartmentList.rejected, (state, { payload }) => { })
+            .addCase(getDepartmentList.rejected, (state, { payload }) => { 
+                state.loading=false
+            })
 
 
 
@@ -303,7 +320,7 @@ export const doctorSlice = createSlice({
                 );
 
                 if (index !== -1) {
-                    state.appointmentList[index].status = "confirmed";
+                    state.appointmentList[index].status = "Confirmed";
                 }
 
             })
@@ -318,9 +335,23 @@ export const doctorSlice = createSlice({
                 );
 
                 if (index !== -1) {
-                    state.appointmentList[index].status = "cancelled";
+                    state.appointmentList[index].status = "Cancelled";
                 }
 
+            })
+            /* accept appointment*/
+
+            .addCase(acceptedAppointment.pending, (state) => {
+                state.loading = true;
+            })
+
+            .addCase(acceptedAppointment.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.acceptedAppointments = payload.data;
+            })
+
+            .addCase(acceptedAppointment.rejected, (state) => {
+                state.loading = false;
             })
 
     }

@@ -5,6 +5,9 @@ import { Provider } from "react-redux";
 import Providers from "@/redux/providers/providers";
 import Navbar from "@/components/navbar/navbar";
 import LayoutWrapper from "@/components/layoutWrapper/layoutWrapper";
+import ThemeLoader from "@/components/themeLoader/themeloader";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,15 +34,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
         className={inter.variable} 
       >
+        <ThemeLoader/>
+
+        
         <Providers>
           <LayoutWrapper>
             {children}
-
           </LayoutWrapper>
           
 

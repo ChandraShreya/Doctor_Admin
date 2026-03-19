@@ -61,3 +61,54 @@ export const confirmLogout = async () => {
 
   return result.isConfirmed;
 };
+
+
+export const showLogoutSuccess = () => {
+  Swal.fire({
+    html: `
+      <div style="text-align:center;padding-top:6px">
+
+        <div style="
+          width:54px;
+          height:54px;
+          margin:0 auto 14px auto;
+          border-radius:14px;
+          background:#eef2ff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:22px;
+          color:#5e72e4;
+          font-weight:600;
+        ">
+          ✓
+        </div>
+
+        <h3 style="
+          font-size:16px;
+          font-weight:600;
+          color:#1e293b;
+          margin-bottom:6px;
+        ">
+          Logged Out
+        </h3>
+
+        <p style="
+          font-size:13px;
+          color:#64748b;
+        ">
+          You have been successfully logged out
+        </p>
+
+      </div>
+    `,
+    width: 320,
+    padding: "20px",
+    showConfirmButton: false,
+    timer: 1400,
+    background: "#ffffff",
+    customClass: {
+      popup: "rounded-2xl shadow-xl",
+    }
+  });
+};

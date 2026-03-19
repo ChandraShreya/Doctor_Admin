@@ -1,5 +1,7 @@
 import Swal from "sweetalert2";
 
+/* ================= CONFIRM ================= */
+
 export const confirmDelete = async (entity = "Item", name = "") => {
 
   const result = await Swal.fire({
@@ -60,4 +62,28 @@ export const confirmDelete = async (entity = "Item", name = "") => {
   });
 
   return result.isConfirmed;
+};
+
+
+/* ================= SUCCESS ALERT ================= */
+
+export const showDeleteSuccess = (entity = "Item", name = "") => {
+  Swal.fire({
+    icon: "success",
+    title: "Deleted",
+    text: `${name} ${entity} deleted successfully`,
+    timer: 1500,
+    showConfirmButton: false,
+  });
+};
+
+
+/* ================= ERROR ALERT ================= */
+
+export const showDeleteError = (entity = "Item", name = "") => {
+  Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: `Failed to delete ${name}`,
+  });
 };

@@ -1,115 +1,98 @@
+
+
+
 // "use client";
 
-// import { useState } from "react";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { useEffect, useState } from "react";
 // import {
-//   faHeartbeat,
-//   faGauge,
-//   faBuilding,
-//   faUserDoctor,
-//   faCalendarCheck,
-//   faGear,
-//   faRightFromBracket,
-//   faChevronRight,
-//   faBell,
-//   faStethoscope,
-// } from "@fortawesome/free-solid-svg-icons";
+//   Dashboard,
+//   Apartment,
+//   MedicalServices,
+//   EventNote,
+//   Logout,
+//   ChevronRight,
+//   DarkMode,
+//   Notifications,
+//   HealthAndSafety,
+//   LightMode,
+// } from "@mui/icons-material";
+
 // import { usePathname, useRouter } from "next/navigation";
 // import Link from "next/link";
 // import { useDispatch } from "react-redux";
 // import { logOut } from "@/redux/slice/authSlice";
 // import { confirmLogout } from "../sweetAlert/confirmLogOut";
 
-
 // export default function Sidebar() {
-//   const [activePage, setActivePage] = useState("dashboard");
-//   const pathname = usePathname()
-//   const dispatch = useDispatch()
-//   const router = useRouter()
+//   const pathname = usePathname();
+//   const dispatch = useDispatch();
+//   const router = useRouter();
+//    const [dark, setDark] = useState(false);
 
 //   const navItems = [
 //     {
-//       id: "dashboard",
-//       label:"Overview",
-//       path:"/dashboard",
-//       icon: faGauge,
+//       label: "Overview",
+//       path: "/dashboard",
+//       icon: <Dashboard fontSize="small" />,
 //     },
 //     {
-//       id: "departments",
-//       label:"Department",
-//       path:"/department",
-//       icon: faBuilding,
-//       // badge: "4",
+//       label: "Department",
+//       path: "/department",
+//       icon: <Apartment fontSize="small" />,
 //     },
 //     {
-//       id: "doctors",
-//       label:"Doctors",
-//       path:"/doctor",
-//       icon: faUserDoctor,
+//       label: "Doctors",
+//       path: "/dashboard/doctors",
+//       icon: <MedicalServices fontSize="small" />,
 //     },
 //     {
-//       id: "appointments",
-//       label:"Appointments",
-//       path:"/appointment",
-//       icon: faCalendarCheck,
+//       label: "Appointments",
+//       path: "/appointment",
+//       icon: <EventNote fontSize="small" />,
 //     },
 //   ];
 
 
-// const handleLogout = async () => {
 
-//   const confirmed = await confirmLogout();
 
-//   if (!confirmed) return;
+//   const handleLogout = async () => {
+//     const confirmed = await confirmLogout();
+//     if (!confirmed) return;
 
-//   const res = await dispatch(logOut());
-
-//   router.push("/");
-// };
+//     await dispatch(logOut());
+//     router.push("/");
+//   };
 
 //   return (
-//     <div className="fixed inset-y-0 left-0 w-72 my-4 ml-4 bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col justify-between overflow-y-auto">
+//     <div className="fixed inset-y-0 left-0 w-64 my-6 ml-6 bg-white  rounded-xl shadow border border-slate-200 flex flex-col justify-between overflow-y-auto">
 
-//       {/* Logo Section */}
-//       <div className="px-5 pt-7 pb-12">
-
+//       {/* Logo */}
+//       <div className="px-5 pt-6 pb-6">
 //         <div className="flex items-center gap-3">
-
-//           <div className="relative w-10 h-10">
-
-//             <div className="absolute inset-0 rounded-xl bg-blue-500/20 blur-md"></div>
-
-//             <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow">
-//               <FontAwesomeIcon icon={faStethoscope} className="text-white text-xl" />
-//             </div>
-
+//           <div className="w-9 h-9 rounded-lg bg-[#5e72e4] flex items-center justify-center">
+//             <HealthAndSafety className="text-white text-sm" />
 //           </div>
 
 //           <div>
-//             <p className="text-slate-800 text-xl font-semibold tracking-tight">
-//               MediCore
-//             </p>
-
-//             <p className="text-blue-600 text-xs pb-2 uppercase tracking-widest">
+//             <p className="text-slate-700 text-lg font-semibold">MediCore</p>
+//             <p className="text-[#5e72e4] text-[10px] uppercase">
 //               Pro Admin
 //             </p>
 //           </div>
-
 //         </div>
 
-//         <div className="mt-5 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
-
+//         <div className="mt-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 //       </div>
 
-//       {/* Navigation Label */}
+//       {/* Nav Label */}
 //       <div className="px-5">
-//         <p className="text-xs text-slate-400 pb-4 uppercase tracking-wider font-medium">
+//         <p className="text-[10px] text-slate-400 pb-2 uppercase tracking-wider font-medium">
 //           Navigation
 //         </p>
 //       </div>
 
-//       {/* Navigation Items */}
-//       <nav className="px-3 mt-4  flex-1 space-y-5">
+//       {/* Nav Items */}
+//       <nav className="px-4 mt-2 flex-1 space-y-3"> {/* 🔥 added gap */}
 
 //         {navItems.map((item) => {
 //           const isActive = pathname === item.path;
@@ -118,122 +101,72 @@
 //             <Link
 //               key={item.path}
 //               href={item.path}
-//               onClick={() => setActivePage(item.id)}
-//               className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl  transition-all duration-200 group relative
-              
+//               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition relative
+
 //               ${
 //                 isActive
-//                   ? "bg-[var(--primary-soft)] border border-backdrop-100 text-blue-700 shadow-sm backdrop-blur-sm"
-//                   : "text-slate-600 hover:bg-blue-50/30"
-//               }
-              
-//               `}
+//                   ? "bg-[#eef2ff] text-[#5e72e4]"
+//                   : "text-slate-500 hover:bg-slate-50"
+//               }`}
 //             >
 
 //               {isActive && (
-//                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 rounded-r-full"></span>
+//                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-[#5e72e4] rounded-r-full"></span>
 //               )}
 
-//               {/* Icon */}
-//               <div
-//                 className={`w-12 h-12 rounded-full flex items-center justify-center transition
-//                 ${
-//                   isActive
-//                     ? "bg-[var(--primary)] text-white"
-//                     : "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
-//                 }
-//                 `}
-//               >
-//                 <FontAwesomeIcon icon={item.icon} className="text-xl" />
-//               </div>
+//               {/* ICON (Grey always) */}
+//               <span className="text-slate-400">
+//                 {item.icon}
+//               </span>
 
-//               {/* Label */}
-//               <span className="text-m font-medium flex-1 text-left">
+//               <span className="text-sm font-medium flex-1">
 //                 {item.label}
 //               </span>
 
-//               {item.badge && isActive && (
-//                 <span className="text-xs bg-blue-200 text-blue-700 px-1 rounded font-medium">
-//                   {item.badge}
-//                 </span>
-//               )}
-
 //               {isActive && (
-//                 <FontAwesomeIcon
-//                   icon={faChevronRight}
-//                   className="text-blue-600 text-xs"
-//                 />
+//                 <ChevronRight className="text-[#5e72e4] text-[14px]" />
 //               )}
-
 //             </Link>
 //           );
 //         })}
-
 //       </nav>
 
-//       {/* Bottom Section */}
-//       <div className="px-3 pb-6 space-y-2">
+//       {/* Bottom */}
+//       <div className="px-4 pb-4 space-y-3">
 
-//         <div className="h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-2 mb-3"></div>
+//         <div className="h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
-//         {/* Settings */}
-//         <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 transition">
-
-//           <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-//             <FontAwesomeIcon icon={faGear} className="text-blue-600 text-xs" />
-//           </div>
-
-//           <span className="text-m font-medium">
-//             Settings
-//           </span>
-
-//         </button>
 
 //         {/* Logout */}
-//         <button 
-//         onClick={handleLogout}
-//         className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition">
-
-//           <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-//             <FontAwesomeIcon icon={faRightFromBracket} className="text-xs" />
-//           </div>
-
-//           <span className="text-m font-medium">
-//             Logout
-//           </span>
-
+//         <button
+//           onClick={handleLogout}
+//           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 transition"
+//         >
+//           <Logout fontSize="small" />
+//           <span className="text-sm font-medium">Logout</span>
 //         </button>
 
 //         {/* Admin Card */}
-//         <div className="mt-3 p-3 rounded-xl bg-blue-50 border border-blue-100 flex items-center gap-3 shadow-sm">
+//         <div className="mt-2 p-3 rounded-lg bg-[#f4f6ff] border border-blue-100 flex items-center gap-2">
 
-//           <div className="relative">
-//             <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-//               A
-//             </div>
-
-//             <span className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 border-2 border-white"></span>
+//           <div className="w-8 h-8 rounded-md bg-[#5e72e4] text-white flex items-center justify-center text-xs font-bold">
+//             A
 //           </div>
 
 //           <div className="flex-1 min-w-0">
-//             <p className="text-sm font-semibold text-slate-800 truncate">
-//                Admin
+//             <p className="text-xs font-semibold text-slate-700 truncate">
+//               Admin
 //             </p>
-
-//             <p className="text-xs text-blue-600 truncate">
+//             <p className="text-[10px] text-slate-500 truncate">
 //               admin@gmail.com
 //             </p>
 //           </div>
 
-//           <FontAwesomeIcon
-//             icon={faBell}
-//             className="text-blue-400 hover:text-blue-600 text-xs cursor-pointer"
-//           />
+//           <Notifications className="text-slate-400 text-[16px]" />
 
 //         </div>
 
 //       </div>
-
 //     </div>
 //   );
 // }
@@ -241,219 +174,225 @@
 
 
 
+
+
 "use client";
 
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
 import {
-  faGauge,
-  faBuilding,
-  faUserDoctor,
-  faCalendarCheck,
-  faGear,
-  faRightFromBracket,
-  faChevronRight,
-  faBell,
-  faStethoscope,
-} from "@fortawesome/free-solid-svg-icons";
+  Dashboard,
+  Apartment,
+  MedicalServices,
+  EventNote,
+  Logout,
+  ChevronRight,
+  DarkMode,
+  Notifications,
+  HealthAndSafety,
+  LightMode,
+  NightlightRound
+} from "@mui/icons-material";
+
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/slice/authSlice";
-import { confirmLogout } from "../sweetAlert/confirmLogOut";
+import {  confirmLogout, showLogoutSuccess } from "../sweetAlert/confirmLogOut";
 
 export default function Sidebar() {
-  const [activePage, setActivePage] = useState("dashboard");
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isDark, setIsDark] = useState(false);
+
+  // const [dark, setDark] = useState(false);
 
   const navItems = [
     {
-      id: "dashboard",
       label: "Overview",
       path: "/dashboard",
-      icon: faGauge,
-      color: "text-blue-600",
+      icon: <Dashboard fontSize="small" />,
     },
     {
-      id: "departments",
       label: "Department",
       path: "/department",
-      icon: faBuilding,
-      color: "text-purple-600",
+      icon: <Apartment fontSize="small" />,
     },
     {
-      id: "doctors",
       label: "Doctors",
-      path: "/doctor",
-      icon: faUserDoctor,
-      color: "text-emerald-600",
+      path: "/dashboard/doctors",
+      icon: <MedicalServices fontSize="small" />,
     },
     {
-      id: "appointments",
       label: "Appointments",
       path: "/appointment",
-      icon: faCalendarCheck,
-      color: "text-orange-500",
+      icon: <EventNote fontSize="small" />,
     },
   ];
 
-  const handleLogout = async () => {
-    const confirmed = await confirmLogout();
-    if (!confirmed) return;
+  /* ---------- DARK MODE TOGGLE ---------- */
 
-    await dispatch(logOut());
-    router.push("/");
+  const toggleDarkMode = () => {
+    const html = document.documentElement;
+
+    html.classList.toggle("dark");
+
+    const darkNow = html.classList.contains("dark");
+    setIsDark(darkNow);
+
+    localStorage.setItem("theme", darkNow ? "dark" : "light");
   };
 
+  useEffect(() => {
+    const html = document.documentElement;
+    setIsDark(html.classList.contains("dark"));
+  }, []);
+
+  /* ---------- LOGOUT ---------- */
+
+const handleLogout = async () => {
+  const confirmed = await confirmLogout();
+  if (!confirmed) return;
+
+  await dispatch(logOut());
+
+  showLogoutSuccess(); 
+
+  setTimeout(() => {
+    router.push("/");
+  }, 1200);
+};
+
   return (
-    <div className="fixed inset-y-0 left-0 w-64 my-6 ml-6 bg-white rounded-xl shadow-[0_20px_27px_0_rgb(0_0_0_/5%)] border border-slate-200 flex flex-col justify-between overflow-y-auto">
+    <div className="fixed inset-y-0 left-0 w-64 my-6 ml-6 bg-white dark:bg-slate-900 rounded-xl shadow border border-slate-200 dark:border-slate-700 flex flex-col justify-between overflow-y-auto transition-colors">
 
-      {/* Logo Section */}
+      {/* Logo */}
       <div className="px-5 pt-6 pb-6">
+        <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#5e72e4] flex items-center justify-center">
+              <HealthAndSafety className="text-white text-sm" />
+            </div>
 
-        <div className="flex items-center gap-3">
-
-          <div className="w-9 h-9 rounded-lg bg-[#5e72e4] flex items-center justify-center shadow">
-            <FontAwesomeIcon icon={faStethoscope} className="text-white text-sm" />
+            <div>
+              <p className="text-slate-700 dark:text-white text-lg font-semibold">
+                MediCore
+              </p>
+              <p className="text-[#5e72e4] text-[10px] uppercase">
+                Pro Admin
+              </p>
+            </div>
           </div>
 
-          <div>
-            <p className="text-slate-700 text-lg font-semibold">
-              MediCore
-            </p>
+          <div className="mt-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
-            <p className="text-[#5e72e4] text-[10px] uppercase tracking-wide">
-              Pro Admin
-            </p>
-          </div>
-
-        </div>
-
-        <div className="mt-4 h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+        </Link>
 
       </div>
 
-
-      {/* Navigation Label */}
+      {/* Nav Label */}
       <div className="px-5">
         <p className="text-[10px] text-slate-400 pb-2 uppercase tracking-wider font-medium">
           Navigation
         </p>
       </div>
 
-
-      {/* Navigation Items */}
-      <nav className="px-4 mt-2 flex-1 space-y-2">
-
+      {/* Nav Items */}
+      <nav className="px-4 mt-2 flex-1 space-y-3">
         {navItems.map((item) => {
-
           const isActive = pathname === item.path;
 
           return (
             <Link
               key={item.path}
               href={item.path}
-              onClick={() => setActivePage(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 relative
-              
-              ${
-                isActive
-                  ? "bg-[#eef2ff] text-[#5e72e4] shadow-sm"
-                  : "text-slate-500 hover:bg-slate-50"
-              }
-              
-              `}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition relative
+                
+                ${isActive
+                  ? "bg-[#eef2ff] dark:bg-slate-800 text-[#5e72e4]"
+                  : "text-slate-500 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                }`}
             >
-
               {isActive && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-[#5e72e4] rounded-r-full"></span>
               )}
 
-              {/* Icon */}
-              <FontAwesomeIcon
-                icon={item.icon}
-                className={`text-sm ${item.color}`}
-              />
+              <span className="text-slate-400 dark:text-slate-300">
+                {item.icon}
+              </span>
 
-              {/* Label */}
               <span className="text-sm font-medium flex-1">
                 {item.label}
               </span>
 
               {isActive && (
-                <FontAwesomeIcon
-                  icon={faChevronRight}
-                  className="text-[#5e72e4] text-[10px]"
-                />
+                <ChevronRight className="text-[#5e72e4] text-[14px]" />
               )}
-
             </Link>
           );
         })}
-
       </nav>
 
+      {/* Bottom */}
+      <div className="px-4 pb-4 space-y-3">
 
-      {/* Bottom Section */}
-      <div className="px-4 pb-4 space-y-2">
+        <div className="h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
-        <div className="h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent mx-2 mb-2"></div>
+        {/* Dark Mode Toggle */}
+        {/* Android 12 Style Toggle */}
+        <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800">
 
-        {/* Settings */}
-        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-100 transition">
-
-          <FontAwesomeIcon icon={faGear} className="text-slate-500 text-sm" />
-
-          <span className="text-sm font-medium">
-            Settings
+          {/* Label */}
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+            {isDark ? "Dark Mode" : "Light Mode"}
           </span>
 
-        </button>
-
+          {/* Switch */}
+          <button
+            onClick={toggleDarkMode}
+            className={`relative w-12 h-7 flex items-center rounded-full transition-all duration-300
+      ${isDark
+                ? "bg-indigo-500"
+                : "bg-slate-300"}
+    `}
+          >
+            {/* Thumb */}
+            <span
+              className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-all duration-300
+        ${isDark ? "translate-x-6" : "translate-x-1"}
+      `}
+            />
+          </button>
+        </div>
 
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 transition"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 dark:text-slate-300 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition"
         >
-
-          <FontAwesomeIcon icon={faRightFromBracket} className="text-sm" />
-
-          <span className="text-sm font-medium">
-            Logout
-          </span>
-
+          <Logout fontSize="small" />
+          <span className="text-sm font-medium">Logout</span>
         </button>
 
-
         {/* Admin Card */}
-        <div className="mt-3 p-3 rounded-lg bg-[#f4f6ff] border border-blue-100 flex items-center gap-2 shadow-sm">
+        <div className="mt-2 p-3 rounded-lg bg-[#f4f6ff] dark:bg-slate-800 border border-blue-100 dark:border-slate-700 flex items-center gap-2">
 
           <div className="w-8 h-8 rounded-md bg-[#5e72e4] text-white flex items-center justify-center text-xs font-bold">
             A
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-700 truncate">
+            <p className="text-xs font-semibold text-slate-700 dark:text-white truncate">
               Admin
             </p>
-
-            <p className="text-[10px] text-slate-500 truncate">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
               admin@gmail.com
             </p>
           </div>
 
-          <FontAwesomeIcon
-            icon={faBell}
-            className="text-slate-400 hover:text-[#5e72e4] text-[10px] cursor-pointer"
-          />
-
+          <Notifications className="text-slate-400 dark:text-slate-300 text-[16px]" />
         </div>
-
       </div>
-
     </div>
   );
 }
