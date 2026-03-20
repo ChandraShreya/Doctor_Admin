@@ -68,11 +68,12 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Cookies } from "react-cookie";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const cookies = new Cookies();
 
   const handleLogout = () => {
@@ -80,16 +81,47 @@ export default function Navbar() {
     router.push("/signIn");
   };
 
+  /* ---------- PAGE CONFIG ---------- */
+
+  const pageConfig = {
+    "/dashboard": {
+      title: "Dashboard",
+      subtitle: "Overview of your hospital",
+    },
+    "/appointments": {
+      title: "Appointments",
+      subtitle: "Manage patient bookings",
+    },
+    "/doctors": {
+      title: "Doctors",
+      subtitle: "Manage doctor profiles",
+    },
+    "/departments": {
+      title: "Departments",
+      subtitle: "Manage hospital departments",
+    },
+    "/patients": {
+      title: "Patients",
+      subtitle: "View and manage patients",
+    },
+  };
+
+  const currentPage =
+    pageConfig[pathname] || {
+      title: "Doctor Admin Panel",
+      subtitle: "Manage hospital system",
+    };
+
   return (
     <div className="relative top-0 z-40 flex items-center justify-between px-6 py-3 mx-6 mt-4 text-white backdrop-blur-sm">
 
       {/* LEFT SIDE */}
       <div>
         <h2 className="text-sm font-semibold tracking-wide text-white">
-          Doctor Admin Panel
+          {currentPage.title}
         </h2>
         <p className="text-xs text-white/80">
-          Manage hospital departments
+          {currentPage.subtitle}
         </p>
       </div>
 
@@ -108,7 +140,6 @@ export default function Navbar() {
         </div>
 
       </div>
-
     </div>
   );
 }

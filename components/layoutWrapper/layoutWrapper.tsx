@@ -114,7 +114,7 @@ export default function LayoutWrapper({ children }) {
   return (
     <div className="relative min-h-screen bg-[#f8f9fe] dark:bg-[#020617] overflow-hidden">
 
-      {/* 🔵 LIGHT MODE GRADIENT (PERFECTLY BLENDED) */}
+      
       <div
         className="absolute top-0 left-0 w-full h-[320px] pointer-events-none dark:hidden"
         style={{
@@ -132,7 +132,6 @@ export default function LayoutWrapper({ children }) {
         }}
       />
 
-      {/* 🌙 DARK MODE — PURE CLEAN BACKGROUND */}
       <div className="absolute top-0 left-0 w-full h-[320px] bg-[#020617] hidden dark:block" />
 
       {/* SIDEBAR */}
