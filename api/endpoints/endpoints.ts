@@ -17,6 +17,10 @@ export const endpoints ={
         appointmentConfirm:`/admin/doctor/appointment/:id`,
         appointmentCancel:`/admin/doctor/appointment/cancelld/:id`,
         acceptedAppointment:`/admin/appointment/acceptedlist`
+    },
+
+    location:{
+        createLocation:`/admin/diagnostic/create`
     }
 
     
@@ -37,5 +41,6 @@ export const points=[
     endpoints.doctor.appointmentConfirm,
     endpoints.doctor.appointmentCancel,
     endpoints.doctor.acceptedAppointment,
+    endpoints.location.createLocation
 ]
 

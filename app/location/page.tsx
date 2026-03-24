@@ -1,0 +1,12 @@
+import CreateLocationForm from '@/components/location/location'
+import React from 'react'
+
+export default function Location() {
+  return (
+    <>
+    <CreateLocationForm/>
+
+      
+    </>
+  )
+}

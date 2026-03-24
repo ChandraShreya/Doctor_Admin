@@ -228,6 +228,11 @@ export default function Sidebar() {
       path: "/appointment",
       icon: <EventNote fontSize="small" />,
     },
+        {
+      label: "Location",
+      path: "/location",
+      icon: <EventNote fontSize="small" />,
+    },
   ];
 
   /* ---------- DARK MODE TOGGLE ---------- */

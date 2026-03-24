@@ -100,9 +100,9 @@ export default function Navbar() {
       title: "Departments",
       subtitle: "Manage hospital departments",
     },
-    "/patients": {
-      title: "Patients",
-      subtitle: "View and manage patients",
+    "/location": {
+      title: "locations",
+      subtitle: "View and manage location",
     },
   };
 
