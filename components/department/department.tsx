@@ -399,6 +399,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IDepartment, IDoctor } from "@/typescript";
 import Skeleton from "@mui/material/Skeleton";
 
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -426,6 +427,7 @@ export default function DepartmentList() {
   const [showDoctorsModal, setShowDoctorsModal] = useState(false);
   const [departmentDoctors, setDepartmentDoctors] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [deptCounts, setDeptCounts] = useState({});
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -503,17 +505,41 @@ const handleDeleteDepartment = async (id: string, name: string) => {
   }
 };
 
-  const handleViewDoctors = async (id: string, name: string) => {
-    try {
-      const res = await dispatch(departmentwiseDoctor(id)).unwrap();
-
-      setDepartmentDoctors(res.data || []);
-      setSelectedDepartment(name);
-      setShowDoctorsModal(true);
-    } catch (error) {
+  const handleViewDoctors = (id: string, name: string) => {
+    setSelectedDepartment(name);
+    setShowDoctorsModal(true);
+    dispatch(departmentwiseDoctor(id)).then((res: any) => {
+      setDepartmentDoctors(res.payload.data || []);
+    }).catch((error: any) => {
       console.log(error);
-    }
+    });
   };
+
+  useEffect(() => {
+  if (!departmentList?.length) return;
+
+  const fetchCounts = async () => {
+    const counts = {};
+
+    await Promise.all(
+      departmentList.map(async (dept) => {
+        try {
+          const res = await dispatch(
+            departmentwiseDoctor(dept._id)
+          ).unwrap();
+
+          counts[dept._id] = res.count || res.data?.length || 0;
+        } catch {
+          counts[dept._id] = 0;
+        }
+      })
+    );
+
+    setDeptCounts(counts);
+  };
+
+  fetchCounts();
+}, [departmentList, dispatch]);
 
   return (
     <div className="space-y-6">
@@ -610,7 +636,7 @@ const handleDeleteDepartment = async (id: string, name: string) => {
               </p>
 
               <p className="text-sm font-semibold text-blue-700 dark:text-blue-400">
-                {dept.doctorCount || 0}
+                {deptCounts[dept._id] || 0}
               </p>
 
               <div className="flex justify-end mt-2">
@@ -622,7 +648,12 @@ const handleDeleteDepartment = async (id: string, name: string) => {
               <div className="flex gap-3 mt-5">
 
                 <button
-                  onClick={() => handleViewDoctors(dept._id, dept.name)}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleViewDoctors(dept._id, dept.name);
+                  }}
                   className="flex-1 py-2 rounded-lg text-xs font-medium transition
 
 bg-indigo-50 text-indigo-600 hover:bg-indigo-100
@@ -632,9 +663,12 @@ dark:bg-indigo-900/20 dark:text-indigo-300 dark:hover:bg-indigo-900/30"
                 </button>
 
                 <button
-                  onClick={() =>
-                    handleDeleteDepartment(dept._id, dept.name)
-                  }
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDeleteDepartment(dept._id, dept.name);
+                  }}
                   className="flex-1 py-2 rounded-lg text-xs font-medium transition
 
 bg-rose-50 text-rose-600 hover:bg-rose-100

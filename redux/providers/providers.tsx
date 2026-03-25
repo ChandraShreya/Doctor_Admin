@@ -1,11 +1,14 @@
 "use client"
+
 import { Provider } from "react-redux"
-import { store } from "../store/store"
 import { Toaster } from "sonner"
+import { store } from "../store/store"
+
+
 
 
 type ProviderProps={
-    children:React.ReactNode
+    children:ReactNode
 }
 export default function Providers({children}:ProviderProps){
     return(

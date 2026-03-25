@@ -6,6 +6,7 @@ import axios from "axios"
 import { log } from "console"
 import { Cookie } from "next/font/google"
 import { Cookies } from "react-cookie"
+import { IAuthState, IUser, IAuthSignInPayload, IAuthSignInResponse } from "@/typescript"
 
 const initialState={
     loading:false,
@@ -13,7 +14,7 @@ const initialState={
 
 }
 const cookie = new Cookies()
-export const authSignIn = createAsyncThunk(
+export const authSignIn = createAsyncThunk<IAuthSignInResponse, IAuthSignInPayload>(
     "authSignIn",
     async(payload)=>{
         const response = await axiosInstance.post(endpoints.auth.signIn , payload)
@@ -23,7 +24,7 @@ export const authSignIn = createAsyncThunk(
     }
 );
 
-export const logOut = createAsyncThunk(
+export const logOut = createAsyncThunk<any>(
     "logOut",
     async()=>{
         const response = await axiosInstance.post(endpoints.auth.logOut)

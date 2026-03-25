@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  doctorList,
+  getAllDoctors,
   getDepartmentList,
   appointmentList,
   acceptedAppointment,
   departmentwiseDoctor,
 } from "@/redux/slice/doctorSlice";
+import { IDoctor, IDepartment, IAppointment } from "@/typescript";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,47 +29,61 @@ import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [deptDoctors, setDeptDoctors] = useState([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const dispatch = useDispatch();
-  const allDoctors = useSelector((state) => state.doctor.doctorList);
-  const doctors = useSelector((state) => state.doctor.doctorList);
+  const allDoctors = useSelector((state) => state.doctor.allDoctors);
+  const doctors = useSelector((state) => state.doctor.allDoctors);
   const departments = useSelector((state) => state.doctor.departmentList);
   const appointments = useSelector((state) => state.doctor.appointmentList);
   const accepted = useSelector((state) => state.doctor.acceptedAppointments);
   const loading = useSelector((state) => state.doctor.loading);
   const router = useRouter()
 
+  // First effect: Load appointments and departments (only once on mount)
   useEffect(() => {
-    dispatch(doctorList());
-    dispatch(getDepartmentList());
-    dispatch(appointmentList());
-    dispatch(acceptedAppointment());
-  }, [dispatch]);
+    if (hasInitialized) return;
+    
+    dispatch(getAllDoctors() as any);
+    dispatch(getDepartmentList() as any);
+    dispatch(appointmentList() as any);
+    dispatch(acceptedAppointment() as any);
+    
+    setHasInitialized(true);
+  }, []);
 
-  const totalDoctors = doctors?.length || 0;
+  const totalDoctors = useSelector((state) => state.doctor.totalItems);
   const totalDepartments = departments?.length || 0;
   const totalAppointments =
     (appointments?.length || 0) + (accepted?.length || 0);
   const pendingAppointments = appointments?.length || 0;
 
-  const latestAppointments = [...appointments, ...accepted]
+  const latestAppointments = [...(appointments || []), ...(accepted || [])]
     ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     ?.slice(0, 5);
 
+  // Second effect: Load department doctors (only when departments change)
   useEffect(() => {
-    if (!departments?.length) return;
+    if (!departments?.length || !hasInitialized) return;
 
     const fetchDeptCounts = async () => {
       const results = await Promise.all(
         departments.map(async (dept) => {
-          const res = await dispatch(
-            departmentwiseDoctor(dept._id)
-          ).unwrap();
+          try {
+            const res = await dispatch(
+              departmentwiseDoctor(dept._id)
+            ).unwrap();
 
-          return {
-            name: dept.name,
-            count: res?.data?.count ?? res?.count ?? 0,
-          };
+            return {
+              name: dept.name,
+              count: res?.data?.count ?? res?.count ?? 0,
+            };
+          } catch (error) {
+            return {
+              name: dept.name,
+              count: 0,
+            };
+          }
         })
       );
 
@@ -76,7 +91,7 @@ export default function Dashboard() {
     };
 
     fetchDeptCounts();
-  }, [departments, dispatch]);
+  }, [departments?.length, hasInitialized, dispatch]);
 
   const latestConfirmed = accepted?.slice(0, 5);
 

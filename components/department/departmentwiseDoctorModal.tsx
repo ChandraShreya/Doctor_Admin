@@ -8,6 +8,7 @@
 //   faCalendarCheck,
 //   faStethoscope,
 // } from "@fortawesome/free-solid-svg-icons";
+// import { IDoctor } from "@/types";
 
 // export default function DepartmentDoctorsModal({
 //   show,

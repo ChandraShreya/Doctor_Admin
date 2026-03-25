@@ -5,6 +5,18 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { create } from "domain";
 import { Cookies } from "react-cookie";
+import { 
+  IDoctorState, 
+  IDoctor, 
+  IDepartment, 
+  IAppointment,
+  IDepartmentCreatePayload,
+  IDoctorCreatePayload,
+  IDoctorEditPayload,
+  IDoctorListPayload,
+  IPaginatedDoctorResponse,
+  IAppointmentResponse
+} from "@/typescript";
 
 
 const initialState = {
@@ -13,12 +25,14 @@ const initialState = {
     departmentId: null,
     departmentList: [],
     doctorList: [],
+    allDoctors: [],
     success: false,
     doctorTotal: 0,
     appointmentList: [],
     appointmentTotal: 0,
     acceptedAppointments: [],
-    cancelledAppointments:[]
+    cancelledAppointments:[],
+     totalItems:0
 }
 
 const cookie = new Cookies()
@@ -41,7 +55,7 @@ export const getDepartmentList = createAsyncThunk(
     }
 )
 
-export const departmentDelete = createAsyncThunk(
+export const departmentDelete = createAsyncThunk<{ id: string }, string>(
     "departmentDelete",
     async (id) => {
         const response = await axiosInstance.post(endpoints.doctor.departmentDelete,
@@ -51,7 +65,7 @@ export const departmentDelete = createAsyncThunk(
         return { id }
     }
 )
-export const doctorCreate = createAsyncThunk(
+export const doctorCreate = createAsyncThunk<any, IDoctorCreatePayload>(
     "doctorCreate",
     async (payload) => {
         const response = await axiosInstance.post(endpoints.doctor.doctorCreate, payload)
@@ -60,7 +74,7 @@ export const doctorCreate = createAsyncThunk(
     }
 )
 
-export const doctorList = createAsyncThunk(
+export const doctorList = createAsyncThunk<IPaginatedDoctorResponse, IDoctorListPayload>(
     "doctorList",
     async (payload) => {
         const response = await axiosInstance.get(endpoints.doctor.doctorList,
@@ -71,7 +85,16 @@ export const doctorList = createAsyncThunk(
     }
 )
 
-export const doctorEdit = createAsyncThunk(
+export const getAllDoctors = createAsyncThunk<IDoctor[]>(
+    "getAllDoctors",
+    async () => {
+        const response = await axiosInstance.get(endpoints.doctor.doctorList)
+        console.log("all doctors", response)
+        return response.data
+    }
+)
+
+export const doctorEdit = createAsyncThunk<any, IDoctorEditPayload>(
     "doctorEdit",
     async ({ id, data }) => {
         const response = await axiosInstance.post(endpoints.doctor.doctorEdit, {
@@ -85,7 +108,7 @@ export const doctorEdit = createAsyncThunk(
     }
 )
 
-export const doctorDelete = createAsyncThunk(
+export const doctorDelete = createAsyncThunk<{ id: string }, string>(
     "doctorDelete",
     async (id) => {
         const response = await axiosInstance.post(endpoints.doctor.doctorDelete,
@@ -110,7 +133,7 @@ export const departmentwiseDoctor = createAsyncThunk(
 );
 
 
-export const appointmentList = createAsyncThunk(
+export const appointmentList = createAsyncThunk<IAppointmentResponse>(
     "appointmentList",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.appointmentList)
@@ -238,6 +261,19 @@ export const doctorSlice = createSlice({
 
             })
             .addCase(doctorList.rejected, (state, { payload }) => {
+                state.loading = false
+            })
+
+            /*get all doctors (without pagination)*/
+            .addCase(getAllDoctors.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(getAllDoctors.fulfilled, (state, { payload }) => {
+                state.loading = false
+                state.allDoctors = payload.data;
+                state.totalItems = payload.totalItems;
+            })
+            .addCase(getAllDoctors.rejected, (state) => {
                 state.loading = false
             })
 

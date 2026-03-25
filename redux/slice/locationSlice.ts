@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/api/axios/axios";
 import { endpoints } from "@/api/endpoints/endpoints";
+import { Nullable, ILocationPayload } from "@/typescript";
 
 
-export const createLocation = createAsyncThunk(
+export const createLocation = createAsyncThunk<any, ILocationPayload>(
   "createLocation",
-  async (payload: any) => {
+  async (payload) => {
     const response = await axiosInstance.post(
       endpoints.location.createLocation,
       payload
