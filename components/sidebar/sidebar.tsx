@@ -14,7 +14,8 @@ import {
   HealthAndSafety,
   LightMode,
   NightlightRound,
-  LocationOn
+  LocationOn,
+  LocalHospital
 } from "@mui/icons-material";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -101,12 +102,12 @@ const handleLogout = async () => {
         <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#5e72e4] flex items-center justify-center">
-              <HealthAndSafety className="text-white text-sm" />
+              <LocalHospital className="text-white text-xs" />
             </div>
 
             <div>
               <p className="text-slate-700 dark:text-white text-lg font-semibold">
-                MediCore
+                Averon
               </p>
               <p className="text-[#5e72e4] text-[10px] uppercase">
                 Pro Admin

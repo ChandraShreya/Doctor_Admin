@@ -342,7 +342,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-// ✅ validation
+
 const schema = yup.object({
     name: yup.string().required("Name is required"),
     fees: yup
@@ -394,7 +394,7 @@ export default function DoctorProfilePage() {
         },
     });
 
-    // ✅ fetch + set values
+   
     useEffect(() => {
         if (!doctor) {
             dispatch(doctorList({ page: 1, limit: 100 }));
@@ -404,15 +404,15 @@ export default function DoctorProfilePage() {
         dispatch(acceptedAppointment());
 
         if (doctor) {
-            const slot = doctor.availableSlots?.[0];
+            const schedule = doctor.schedule;
 
             reset({
-                name: doctor.name || "",
-                fees: doctor.fees || "",
-                startTime: slot?.time || "",
-                endTime: "",
-                duration: "",
-            });
+    name: doctor.name || "",
+    fees: doctor.fees || "",
+    startTime: schedule?.startTime || "",
+    endTime: schedule?.endTime || "",
+    duration: schedule?.slotDuration || "",
+});
         }
     }, [doctor, dispatch, reset]);
 
@@ -420,34 +420,36 @@ export default function DoctorProfilePage() {
         return <div className="p-6 text-slate-500">Loading doctor...</div>;
     }
 
-    const onSubmit = async (data) => {
+const onSubmit = async (data) => {
+  const payload = {
+    name: data.name,
+    fees: Number(data.fees),
+    schedule: {
+      startTime: data.startTime,
+      endTime: data.endTime,
+      slotDuration: Number(data.duration),
+    },
+  };
 
-        const payload = {
-            name: data.name,
-            fees: data.fees,
-            availableSlots: [
-                {
-                    date: new Date().toISOString().split("T")[0],
-                    time: data.startTime,
-                },
-            ],
-        };
+  try {
+    const res = await dispatch(
+      doctorEdit({
+        id: doctor._id,
+        data: payload,
+      })
+    ).unwrap();
 
-        try {
-            const res = await dispatch(
-                doctorEdit({
-                    id: doctor._id,
-                    data: payload,
-                })
-            ).unwrap();
+    toast.success(res.message || "Doctor updated");
 
-            toast.success(res.message || "Doctor updated");
-            router.push("/dashboard/doctors");
+    // optional but safe
+    await dispatch(doctorList({ page: 1, limit: 10 }));
 
-        } catch {
-            toast.error("Update failed");
-        }
-    };
+    router.push("/dashboard/doctors");
+
+  } catch {
+    toast.error("Update failed");
+  }
+};
 
     return (
         <div className="space-y-6">

@@ -264,7 +264,7 @@ export const doctorSlice = createSlice({
                 state.loading = false
             })
 
-            /*get all doctors (without pagination)*/
+            /*get all doctors */
             .addCase(getAllDoctors.pending, (state) => {
                 state.loading = true
             })
@@ -282,18 +282,22 @@ export const doctorSlice = createSlice({
                 state.loading = true
             })
             .addCase(doctorEdit.fulfilled, (state, { payload }) => {
-                state.loading = false
-                state.success = true
+    state.loading = false;
+    state.success = true;
 
-                const updatedDoctor = payload.data
+    const updatedDoctor = payload.data;
 
-                const index = state.doctorList.findIndex(
-                    (doc) => doc._id === updatedDoctor._id
-                )
-                if (index !== -1) {
-                    state.doctorList[index] = updatedDoctor
-                }
-            })
+    const index = state.doctorList.findIndex(
+        (doc) => doc._id === updatedDoctor._id
+    );
+
+    if (index !== -1) {
+        state.doctorList[index] = {
+            ...state.doctorList[index],
+            ...updatedDoctor,
+        };
+    }
+})
             .addCase(doctorEdit.rejected, (state, { payload }) => {
                 state.loading = false
             })
