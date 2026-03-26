@@ -686,30 +686,6 @@ export default function DoctorProfilePage() {
                         </div>
 
 
-                        {/* SCHEDULE */}
-                        <div className="
-      rounded-xl p-4
-      bg-blue-50 dark:bg-blue-500/10
-      border border-blue-100 dark:border-blue-400/30
-    ">
-                            <p className="text-xs text-blue-600 dark:text-blue-300 font-medium">
-                                Today's Schedule
-                            </p>
-
-                            {doctor.availableSlots?.length > 0 ? (
-                                <p className="text-sm mt-1 text-blue-800 dark:text-blue-200">
-                                    {new Date(
-                                        doctor.availableSlots[0]?.date
-                                    ).toLocaleDateString("en-IN")}{" "}
-                                    | {doctor.availableSlots[0]?.time}
-                                </p>
-                            ) : (
-                                <p className="text-xs text-slate-400">
-                                    No schedule today
-                                </p>
-                            )}
-                        </div>
-
                         {/* APPOINTMENT HISTORY */}
                         <div className="
       rounded-xl p-4
