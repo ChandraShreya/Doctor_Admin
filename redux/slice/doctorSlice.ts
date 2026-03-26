@@ -323,6 +323,8 @@ export const doctorSlice = createSlice({
             .addCase(departmentwiseDoctor.fulfilled, (state, { payload }) => {
                 state.loading = false;
                 state.doctorList = payload.data;
+                // Keep pagination correct for filtered department results
+                state.doctorTotal = payload.totalItems ?? payload.data?.length ?? 0;
             })
 
             .addCase(departmentwiseDoctor.rejected, (state) => {

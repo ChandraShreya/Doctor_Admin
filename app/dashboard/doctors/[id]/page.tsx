@@ -335,7 +335,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { doctorEdit, doctorList } from "@/redux/slice/doctorSlice";
+import { doctorEdit, doctorList, appointmentList, acceptedAppointment } from "@/redux/slice/doctorSlice";
 import { toast } from "sonner";
 
 import { useForm } from "react-hook-form";
@@ -364,7 +364,19 @@ export default function DoctorProfilePage() {
     const dispatch = useDispatch();
 
     const doctors = useSelector((state) => state.doctor.doctorList);
+    const appointments = useSelector((state) => state.doctor.appointmentList);
+    const acceptedAppointments = useSelector((state) => state.doctor.acceptedAppointments);
     const doctor = doctors?.find((doc) => doc._id === id);
+
+    const doctorAppointments = [
+        ...(appointments || []).filter((a) => a.doctorId === id),
+        ...(acceptedAppointments || []).filter((a) => a.doctorId === id),
+    ]
+        .reduce((unique, item) => {
+            if (!unique.find((a) => a._id === item._id)) unique.push(item);
+            return unique;
+        }, [])
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const {
         register,
@@ -387,6 +399,9 @@ export default function DoctorProfilePage() {
         if (!doctor) {
             dispatch(doctorList({ page: 1, limit: 100 }));
         }
+
+        dispatch(appointmentList());
+        dispatch(acceptedAppointment());
 
         if (doctor) {
             const slot = doctor.availableSlots?.[0];
@@ -692,6 +707,39 @@ export default function DoctorProfilePage() {
                                 <p className="text-xs text-slate-400">
                                     No schedule today
                                 </p>
+                            )}
+                        </div>
+
+                        {/* APPOINTMENT HISTORY */}
+                        <div className="
+      rounded-xl p-4
+      bg-white dark:bg-slate-800
+      border border-slate-200 dark:border-slate-700
+      mt-4
+    ">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                Appointment History
+                            </p>
+
+                            {doctorAppointments.length === 0 ? (
+                                <p className="text-sm mt-2 text-slate-500 dark:text-slate-400">
+                                    No appointments found for this doctor.
+                                </p>
+                            ) : (
+                                <ul className="mt-3 space-y-2 max-h-56 overflow-auto">
+                                    {doctorAppointments.slice(0, 8).map((a) => (
+                                        <li key={a._id} className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                                            <div className="flex justify-between text-xs">
+                                                <span>{new Date(a.date).toLocaleDateString("en-IN")}</span>
+                                                <span className="font-semibold">{a.time}</span>
+                                            </div>
+                                            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                                                {a.status?.charAt(0).toUpperCase() + a.status?.slice(1)}
+                                                {a.name ? ` · ${a.name}` : ""}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
                             )}
                         </div>
 

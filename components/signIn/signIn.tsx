@@ -18,6 +18,7 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 
 const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -80,7 +81,7 @@ export default function Login() {
 
             {/* LOGO */}
             <div className="w-14 h-14 mx-auto mb-6 rounded-2xl bg-[#5e72e4] flex items-center justify-center shadow-md shadow-[#5e72e4]/30">
-              <FontAwesomeIcon icon={faStethoscope} className="text-white text-lg" />
+              <LocalHospitalIcon sx={{ color: "#fff", fontSize: 20 }} />
             </div>
 
             <h2 className="text-xl font-semibold text-center text-slate-800">
@@ -195,7 +196,7 @@ transition"
             </form>
 
             <p className="text-center text-xs text-slate-400 mt-8">
-              MediCore Admin Panel
+              Averon Admin Panel
             </p>
 
           </div>

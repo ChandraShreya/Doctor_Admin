@@ -298,19 +298,20 @@ const handleDeleteDoctor = async (id, doctorName) => {
       </div>
 
       {/* PAGINATION */}
-      <div className="flex justify-end mt-8">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-full 
-        bg-white/60 dark:bg-slate-800 backdrop-blur-lg border border-white/40 dark:border-slate-700 shadow-sm">
+      {totalPages > 1 && (
+        <div className="flex justify-end mt-8">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-full 
+          bg-white/60 dark:bg-slate-800 backdrop-blur-lg border border-white/40 dark:border-slate-700 shadow-sm">
 
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            className={`px-3 py-1 text-xs rounded-full ${
-              page === 1 ? "text-slate-300" : "hover:bg-slate-100 dark:hover:bg-slate-700"
-            }`}
-          >
-            Prev
-          </button>
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              className={`px-3 py-1 text-xs rounded-full ${
+                page === 1 ? "text-slate-300" : "hover:bg-slate-100 dark:hover:bg-slate-700"
+              }`}
+            >
+              Prev
+            </button>
 
           {Array.from({ length: totalPages }).map((_, i) => {
             const p = i + 1;
@@ -342,6 +343,7 @@ const handleDeleteDoctor = async (id, doctorName) => {
 
         </div>
       </div>
+      )}
 
       {/* MODAL */}
       {showModal && (
