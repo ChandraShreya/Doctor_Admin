@@ -729,7 +729,7 @@ export default function DoctorProfilePage() {
                                 <ul className="mt-3 space-y-2 max-h-56 overflow-auto">
                                     {doctorAppointments.slice(0, 8).map((a) => (
                                         <li key={a._id} className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
-                                            <div className="flex justify-between text-xs">
+                                            <div className="flex justify-between text-xs text-slate-500">
                                                 <span>{new Date(a.date).toLocaleDateString("en-IN")}</span>
                                                 <span className="font-semibold">{a.time}</span>
                                             </div>
