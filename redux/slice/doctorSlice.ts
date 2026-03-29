@@ -5,17 +5,17 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { create } from "domain";
 import { Cookies } from "react-cookie";
-import { 
-  IDoctorState, 
-  IDoctor, 
-  IDepartment, 
-  IAppointment,
-  IDepartmentCreatePayload,
-  IDoctorCreatePayload,
-  IDoctorEditPayload,
-  IDoctorListPayload,
-  IPaginatedDoctorResponse,
-  IAppointmentResponse
+import {
+    IDoctorState,
+    IDoctor,
+    IDepartment,
+    IAppointment,
+    IDepartmentCreatePayload,
+    IDoctorCreatePayload,
+    IDoctorEditPayload,
+    IDoctorListPayload,
+    IPaginatedDoctorResponse,
+    IAppointmentResponse
 } from "@/typescript";
 
 
@@ -31,8 +31,8 @@ const initialState = {
     appointmentList: [],
     appointmentTotal: 0,
     acceptedAppointments: [],
-    cancelledAppointments:[],
-     totalItems:0
+    cancelledAppointments: [],
+    totalItems: 0
 }
 
 const cookie = new Cookies()
@@ -40,7 +40,7 @@ export const departmentCreate = createAsyncThunk(
     "departmentCreate",
     async (payload) => {
         const response = await axiosInstance.post(endpoints.doctor.department, payload)
-        console.log(response)
+        console.log("department create",response)
         return response.data
     }
 
@@ -50,7 +50,7 @@ export const getDepartmentList = createAsyncThunk(
     "getDepartmentList",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.departmentList)
-        console.log(response)
+        console.log("department list",response)
         return response.data
     }
 )
@@ -137,7 +137,7 @@ export const appointmentList = createAsyncThunk<IAppointmentResponse>(
     "appointmentList",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.appointmentList)
-        console.log("appointment",response)
+        console.log("appointment", response)
         return response.data
     }
 )
@@ -174,7 +174,7 @@ export const acceptedAppointment = createAsyncThunk(
     "acceptedAppointment",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.acceptedAppointment)
-        console.log("accept appointment" , response)
+        console.log("accept appointment", response)
         return response.data
     }
 )
@@ -206,17 +206,17 @@ export const doctorSlice = createSlice({
 
             /*get department list*/
             .addCase(getDepartmentList.pending, (state, { payload }) => {
-                state.loading= true
+                state.loading = true
 
             })
             .addCase(getDepartmentList.fulfilled, (state, { payload }) => {
-                state.loading=false
+                state.loading = false
                 state.departmentList = payload.data;
 
 
             })
-            .addCase(getDepartmentList.rejected, (state, { payload }) => { 
-                state.loading=false
+            .addCase(getDepartmentList.rejected, (state, { payload }) => {
+                state.loading = false
             })
 
 
@@ -282,22 +282,22 @@ export const doctorSlice = createSlice({
                 state.loading = true
             })
             .addCase(doctorEdit.fulfilled, (state, { payload }) => {
-    state.loading = false;
-    state.success = true;
+                state.loading = false;
+                state.success = true;
 
-    const updatedDoctor = payload.data;
+                const updatedDoctor = payload.data;
 
-    const index = state.doctorList.findIndex(
-        (doc) => doc._id === updatedDoctor._id
-    );
+                const index = state.doctorList.findIndex(
+                    (doc) => doc._id === updatedDoctor._id
+                );
 
-    if (index !== -1) {
-        state.doctorList[index] = {
-            ...state.doctorList[index],
-            ...updatedDoctor,
-        };
-    }
-})
+                if (index !== -1) {
+                    state.doctorList[index] = {
+                        ...state.doctorList[index],
+                        ...updatedDoctor,
+                    };
+                }
+            })
             .addCase(doctorEdit.rejected, (state, { payload }) => {
                 state.loading = false
             })

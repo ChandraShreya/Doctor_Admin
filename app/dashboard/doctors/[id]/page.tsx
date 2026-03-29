@@ -441,7 +441,7 @@ const onSubmit = async (data) => {
 
     toast.success(res.message || "Doctor updated");
 
-    // optional but safe
+    
     await dispatch(doctorList({ page: 1, limit: 10 }));
 
     router.push("/dashboard/doctors");

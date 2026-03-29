@@ -49,7 +49,7 @@ const onSubmit = async (data: any) => {
       lng: Number(data.lng),
     };
 
-    console.log("PAYLOAD:", payload); // 🔍 debug
+    console.log("PAYLOAD:", payload); 
 
     const result = await dispatch(createLocation(payload)).unwrap();
 
