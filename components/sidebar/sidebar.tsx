@@ -25,11 +25,12 @@ import { AppDispatch } from "@/redux/store/store";
 import { logOut } from "@/redux/slice/authSlice";
 import {  confirmLogout, showLogoutSuccess } from "../sweetAlert/confirmLogOut";
 
-export default function Sidebar() {
+export default function Sidebar({ open, setOpen }: any) {
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [isDark, setIsDark] = useState(false);
+  
 
  
 
@@ -95,7 +96,18 @@ const handleLogout = async () => {
 };
 
   return (
-    <div className="fixed inset-y-0 left-0 w-64 my-6 ml-6 bg-white dark:bg-slate-900 rounded-xl shadow border border-slate-200 dark:border-slate-700 flex flex-col justify-between overflow-y-auto transition-colors">
+       <div
+    className={`
+      fixed inset-y-0 left-0 z-50 w-64
+      transform ${open ? "translate-x-0" : "-translate-x-full"}
+      lg:translate-x-0
+      transition-transform duration-300
+      my-6 ml-6
+      bg-white dark:bg-slate-900
+      rounded-xl shadow border border-slate-200 dark:border-slate-700
+      flex flex-col justify-between overflow-y-auto
+    `}
+  >
 
       {/* Logo */}
       <div className="px-5 pt-6 pb-6">
@@ -137,6 +149,7 @@ const handleLogout = async () => {
             <Link
               key={item.path}
               href={item.path}
+              onClick={() => setOpen(false)}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition relative
                 
                 ${isActive
@@ -170,7 +183,7 @@ const handleLogout = async () => {
         <div className="h-px bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
 
         {/* Dark Mode Toggle */}
-        {/* Android 12 Style Toggle */}
+        
         <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800">
 
           {/* Label */}

@@ -72,7 +72,7 @@ export default function DepartmentDoctorsModal({
           {doctorLoading ? (
   <p>Loading doctors...</p>
 ) : doctors.length === 0 ? (
-  <p>No doctors found</p>
+  <p className="text-xs text-slate-500">No doctors found</p>
 ) : (
             doctors.map((doc: any) => (
               <div
@@ -100,46 +100,6 @@ export default function DepartmentDoctorsModal({
 
                 <div className="border-t border-slate-100 my-3"></div>
 
-                {/* Slots */}
-                <div className="space-y-2 text-xs text-slate-600">
-
-                  {doc.availableSlots && doc.availableSlots.length > 0 ? (
-
-                    doc.availableSlots.map((slot: any, index: number) => {
-
-                      const dateObj = new Date(slot.date);
-
-                      const formattedDate = dateObj.toLocaleDateString("en-IN", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                      });
-
-                      return (
-                        <div key={index} className="flex items-center gap-2">
-
-                          <FontAwesomeIcon
-                            icon={faCalendarCheck}
-                            className="text-green-500"
-                          />
-
-                          <span>
-                            {formattedDate} • {slot.time}
-                          </span>
-
-                        </div>
-                      );
-                    })
-
-                  ) : (
-
-                    <p className="text-xs text-slate-400">
-                      No slots available
-                    </p>
-
-                  )}
-
-                </div>
 
                 {/* Fee */}
                 <div className="mt-3 flex justify-between items-center">

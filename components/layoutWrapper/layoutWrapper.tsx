@@ -1,95 +1,3 @@
-// "use client";
-
-// import { usePathname } from "next/navigation";
-// import { useEffect, useState } from "react";
-// import Navbar from "../navbar/navbar";
-// import Sidebar from "../sidebar/sidebar";
-
-// export default function LayoutWrapper({ children }) {
-//   const pathname = usePathname();
-//   const [mounted, setMounted] = useState(false);
-
-//   useEffect(() => {
-//     setMounted(true);
-//   }, []);
-
-//   if (!mounted) return null;
-
-//   const hideNavbar = pathname === "/";
-
-//   if (hideNavbar) return <>{children}</>;
-
-//   return (
-//     <div className="min-h-screen bg-[#f8f9fe]">
-//       <div className="fixed top-0 left-0 w-full h-72 bg-[#5e72e4]"></div>
-
-      
-
-//       <Sidebar />
-
-//       <main className="ml-[17rem] mr-6 relative">
-//         <Navbar />
-
-//         <div className="px-8 pb-10 pt-6">
-//           {children}
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
-
-
-
-// "use client";
-
-// import { usePathname } from "next/navigation";
-// import { useEffect, useState } from "react";
-// import Navbar from "../navbar/navbar";
-// import Sidebar from "../sidebar/sidebar";
-
-// export default function LayoutWrapper({ children }) {
-//   const pathname = usePathname();
-//   const [mounted, setMounted] = useState(false);
-
-//   useEffect(() => {
-//     setMounted(true);
-//   }, []);
-
-//   if (!mounted) return null;
-
-//   const hideNavbar = pathname === "/";
-
-//   if (hideNavbar) return <>{children}</>;
-
-//   return (
-//     <div className="min-h-screen bg-[#f8f9fe] dark:bg-slate-900 transition-colors duration-300">
-
-//       {/* 🔥 Blue background ONLY in light mode */}
-//       <div className="fixed top-0 left-0 w-full h-72 
-//         bg-[#5e72e4] 
-//         dark:hidden"
-//       ></div>
-
-//       {/* Sidebar */}
-//       <Sidebar />
-
-//       {/* Main Content */}
-//       <main className="ml-[17rem] mr-6 relative">
-
-//         {/* Navbar */}
-//         <Navbar />
-
-//         {/* Page Content */}
-//         <div className="px-8 pb-10 pt-6">
-//           {children}
-//         </div>
-
-//       </main>
-//     </div>
-//   );
-// }
-
-
 
 "use client";
 
@@ -97,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navbar from "../navbar/navbar";
 import Sidebar from "../sidebar/sidebar";
+import { AnyARecord } from "node:dns";
 
-export default function LayoutWrapper({ children }) {
+export default function LayoutWrapper({ children}:any) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -135,12 +45,18 @@ export default function LayoutWrapper({ children }) {
       <div className="absolute top-0 left-0 w-full h-[320px] bg-[#020617] hidden dark:block" />
 
       {/* SIDEBAR */}
-      <Sidebar />
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen}/>{sidebarOpen && (
+  <div
+    className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    onClick={() => setSidebarOpen(false)}
+  />
+)}
+
 
       {/* MAIN CONTENT */}
-      <main className="ml-[17rem] mr-6 relative">
+      <main className="lg:ml-[17rem] mr-4 lg:mr-6 relative">
 
-        <Navbar />
+        <Navbar setOpen={setSidebarOpen}/>
 
         {/* CONTENT */}
         <div className="px-8 pt-8 pb-10">

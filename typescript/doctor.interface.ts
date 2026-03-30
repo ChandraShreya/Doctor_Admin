@@ -10,7 +10,7 @@ export interface IDoctor {
   phone?: string;
   specialization?: string;
   departmentId?: string;
-  fees?: number;
+  fees?: string;
   availableSlots?: IAvailableSlot[];
   schedule?: {
     startTime: string;
@@ -19,7 +19,8 @@ export interface IDoctor {
   };
   createdAt?: string;
   updatedAt?: string;
-  count:any
+  count:any;
+  department:any;
 
 }
 
@@ -115,7 +116,7 @@ export interface IDoctorCreatePayload {
   email?: string;          
   phone?: string;          
   departmentId: string;
-  fees: number;
+  fees: string;
   schedule?: {
     startTime: string;
     endTime: string;
@@ -135,7 +136,7 @@ export interface IDoctorListPayload {
 }
 
 export interface IPaginatedDoctorResponse {
-//   data?: IDoctor[];
+  // data?: IDoctor[];
   doctors?: IDoctor[];
   totalItems: number;
   totalPages: number;
@@ -143,7 +144,7 @@ export interface IPaginatedDoctorResponse {
 }
 
 export interface IAppointmentResponse {
-//   data?: IAppointment[];
+  // data?: IAppointment[];
   appointments?: IAppointment[];
   totalItems: number;
   totalPages: number;

@@ -21,7 +21,11 @@ import { useRouter } from "next/navigation";
 
 
 export default function Dashboard() {
-  const [deptDoctors, setDeptDoctors] = useState([]);
+  type DeptDoctor = {
+  name: string;
+  count: number;
+};
+  const [deptDoctors, setDeptDoctors] = useState<DeptDoctor[]>([]);
   const [hasInitialized, setHasInitialized] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -36,30 +40,34 @@ export default function Dashboard() {
   useEffect(() => {
     if (hasInitialized) return;
 
-    dispatch(getAllDoctors() as any);
-    dispatch(getDepartmentList() as any);
-    dispatch(appointmentList() as any);
-    dispatch(acceptedAppointment() as any);
+    dispatch(getAllDoctors());
+    dispatch(getDepartmentList());
+    dispatch(appointmentList());
+    dispatch(acceptedAppointment());
 
     setHasInitialized(true);
   }, []);
 
-  const totalDoctors = useSelector((state) => state.doctor.totalItems);
+  const totalDoctors = useSelector((state:RootState) => state.doctor.totalItems);
   const totalDepartments = departments?.length || 0;
   const totalAppointments =
     (appointments?.length || 0) + (accepted?.length || 0);
   const pendingAppointments = appointments?.length || 0;
 
   const latestAppointments = [...(appointments || []), ...(accepted || [])]
-    ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    ?.sort((a, b) => new Date(b.createdAt ?? "").getTime() - new Date(a.createdAt ?? "").getTime())
     ?.slice(0, 5);
 
   
   useEffect(() => {
     if (!departments?.length || !hasInitialized) return;
-
+    
+type DeptDoctor = {
+  name: string;
+  count: number;
+};
     const fetchDeptCounts = async () => {
-      const results = await Promise.all(
+      const results:DeptDoctor[] = await Promise.all(
         departments.map(async (dept) => {
           try {
             const res = await dispatch(
@@ -68,7 +76,7 @@ export default function Dashboard() {
 
             return {
               name: dept.name,
-              count: res?.data?.count ?? res?.count ?? 0,
+              count:  res.data?.length || 0,
             };
           } catch (error) {
             return {

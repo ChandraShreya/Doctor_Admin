@@ -149,16 +149,16 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
 
       {/* TABLE */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[700px] text-xs sm:text-sm">
 
-        <table className="w-full text-sm">
-
-          <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-xs uppercase">
+          <thead className="bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-[10px] sm:text-xs uppercase ">
             <tr>
-              <th className="px-6 py-4 text-left">Doctor</th>
-              <th className="px-6 py-4 text-left">Department</th>
-              <th className="px-6 py-4 text-left">Available Slot</th>
-              <th className="px-6 py-4 text-left">Fees</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">Doctor</th>
+              <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">Department</th>
+              <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">Available Slot</th>
+              <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">Fees</th>
+              <th className="px-3 sm:px-6 py-3 sm:py-4 text-right">Actions</th>
             </tr>
           </thead>
 
@@ -170,7 +170,7 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
 
                 <tr key={i} className="border-b border-slate-100 dark:border-slate-700">
 
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                     <div className="flex items-center gap-3">
                       <Skeleton variant="circular" width={36} height={36} />
                       <div className="flex flex-col gap-1">
@@ -180,11 +180,11 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
                     </div>
                   </td>
 
-                  <td className="px-6 py-4"><Skeleton width={120} height={14} /></td>
-                  <td className="px-6 py-4"><Skeleton width={140} height={28} /></td>
-                  <td className="px-6 py-4"><Skeleton width={60} height={14} /></td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm"><Skeleton width={120} height={14} /></td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm"><Skeleton width={140} height={28} /></td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm"><Skeleton width={60} height={14} /></td>
 
-                  <td className="px-6 py-4 flex justify-end gap-3">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 flex justify-end gap-3 text-xs sm:text-sm">
                     <Skeleton variant="circular" width={28} height={28} />
                     <Skeleton variant="circular" width={28} height={28} />
                   </td>
@@ -225,7 +225,7 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
                     className="border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
                   >
 
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <div className="flex items-center gap-3">
 
                         <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-semibold">
@@ -245,13 +245,13 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
                       </div>
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-slate-600 dark:text-slate-300">
                       {
                         departments.find((d) => d._id === doc.departmentId)?.name ||
                         "—"}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       {doc.schedule ? (
                         <div className="inline-flex flex-col px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-medium w-fit">
                           <span>{doc.schedule.startTime} - {doc.schedule.endTime}</span>
@@ -264,11 +264,11 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
                       )}
                     </td>
 
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-slate-600 dark:text-slate-300">
                       ₹{doc.fees}
                     </td>
 
-                    <td className="px-6 py-4 flex justify-end gap-3">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 flex justify-end gap-3">
 
                       <button
                         onClick={() => router.push(`/dashboard/doctors/${doc._id}`)}
@@ -295,6 +295,9 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
           </tbody>
 
         </table>
+
+            </div>
+        
 
       </div>
 

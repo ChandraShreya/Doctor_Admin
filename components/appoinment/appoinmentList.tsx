@@ -48,7 +48,7 @@ export default function AppointmentList() {
     dispatch(getAllDoctors());
   }, [dispatch]);
 
-  
+
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
@@ -75,23 +75,20 @@ export default function AppointmentList() {
 
   /* ---------- STATS ---------- */
 
-  const totalAppointments = appointments?.length || 0;
+  const totalAppointments = (appointments?.length || 0) + (acceptedAppointments?.length || 0);
 
- const confirmed =
-  (appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === "confirmed").length || 0) +
-  (acceptedAppointments?.length || 0);
+  const confirmed =
+    (appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === "confirmed").length || 0) +
+    (acceptedAppointments?.length || 0);
 
   const pending =
     appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === "pending").length || 0;
 
-  // const cancelled =
-  //   appointments?.filter((a) => a.status?.toLowerCase() === "cancelled")
-  //     .length || 0;
 
   /* ---------- ACCEPTED LAST 7 DAYS ---------- */
 
   const last7DaysAccepted = acceptedAppointments?.filter((a: IAppointment) => {
-    const appointmentDate = new Date(a.date); // change to createdAt if needed
+    const appointmentDate = new Date(a.date); 
     const today = new Date();
     const diffTime = today.getTime() - appointmentDate.getTime();
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
@@ -101,9 +98,9 @@ export default function AppointmentList() {
   /* ---------- FILTER ---------- */
 
   const filteredAppointments: IAppointment[] | undefined = (() => {
-    if (filter === "all") return appointments;
+    if (filter === "all") return [...(appointments || []), ...(acceptedAppointments || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    if (filter === "accepted") return last7DaysAccepted;
+    if (filter === "accepted") return acceptedAppointments;
 
     return appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === filter);
   })();
@@ -113,16 +110,16 @@ export default function AppointmentList() {
     currentPage * itemsPerPage
   );
 
-const totalPages = Math.ceil(
-  (filteredAppointments?.length || 0) / itemsPerPage
-);
+  const totalPages = Math.ceil(
+    (filteredAppointments?.length || 0) / itemsPerPage
+  );
 
   return (
     <div className="space-y-6">
 
       {/* ---------- STATS ---------- */}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
@@ -146,20 +143,20 @@ const totalPages = Math.ceil(
 
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-[0_20px_27px_0_rgb(0_0_0_/5%)] border border-slate-200 dark:border-slate-700 overflow-hidden">
 
+
         {/* FILTER HEADER */}
 
-        <div className="px-6 py-5 flex items-center">
+        <div className="px-3 sm:px-6 py-4 sm:py-5 flex items-center overflow-x-auto">
           <div className="flex items-center bg-slate-100 dark:bg-slate-700 rounded-full p-1">
 
-            {["all", "pending",  "accepted"].map((type) => (
+            {["all", "pending", "accepted"].map((type) => (
               <button
                 key={type}
                 onClick={() => setFilter(type)}
-                className={`px-4 py-1.5 text-sm rounded-full font-medium transition ${
-                  filter === type
+                className={`px-4 py-1.5 text-sm rounded-full font-medium transition ${filter === type
                     ? "bg-[#5e72e4] text-white shadow"
                     : "text-slate-500 dark:text-slate-300"
-                }`}
+                  }`}
               >
                 {type === "all"
                   ? "All Appointments"
@@ -184,114 +181,113 @@ const totalPages = Math.ceil(
 
         {/* ROWS */}
 
-{loading ? (
+        {loading ? (
 
-  Array.from({ length: 6 }).map((_, i) => (
-    <div key={i} className="grid grid-cols-12 items-center px-6 py-5">
-      <div className="col-span-5 flex items-center gap-4">
-        <Skeleton variant="circular" width={44} height={44} />
-        <div>
-          <Skeleton width={120} height={14} />
-          <Skeleton width={80} height={12} />
-        </div>
-      </div>
-      <div className="col-span-2"><Skeleton width={100} height={14} /></div>
-      <div className="col-span-3">
-        <Skeleton width={120} height={14} />
-        <Skeleton width={80} height={12} />
-      </div>
-      <div className="col-span-1"><Skeleton width={70} height={24} /></div>
-      <div className="col-span-1 flex justify-end">
-        <Skeleton variant="circular" width={36} height={36} />
-      </div>
-    </div>
-  ))
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="grid grid-cols-12 items-center px-3 sm:px-6 py-3 sm:py-5 text-xs sm:text-sm">
+              <div className="col-span-5 flex items-center gap-4">
+                <Skeleton variant="circular" width={44} height={44} />
+                <div>
+                  <Skeleton width={120} height={14} />
+                  <Skeleton width={80} height={12} />
+                </div>
+              </div>
+              <div className="col-span-2"><Skeleton width={100} height={14} /></div>
+              <div className="col-span-3">
+                <Skeleton width={120} height={14} />
+                <Skeleton width={80} height={12} />
+              </div>
+              <div className="col-span-1"><Skeleton width={70} height={24} /></div>
+              <div className="col-span-1 flex justify-end">
+                <Skeleton variant="circular" width={36} height={36} />
+              </div>
+            </div>
+          ))
 
-) : paginatedAppointments?.length === 0 ? (
+        ) : paginatedAppointments?.length === 0 ? (
 
-  <div className="flex flex-col items-center justify-center py-16">
+          <div className="flex flex-col items-center justify-center py-16">
 
-    <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
-      <FontAwesomeIcon icon={faCalendarCheck} className="text-slate-400 text-xl" />
-    </div>
+            <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">
+              <FontAwesomeIcon icon={faCalendarCheck} className="text-slate-400 text-xl" />
+            </div>
 
-    <p className="text-lg font-semibold text-slate-600 dark:text-slate-300">
-      No appointments found
-    </p>
+            <p className="text-lg font-semibold text-slate-600 dark:text-slate-300">
+              No appointments found
+            </p>
 
-    <p className="text-sm text-slate-400 mt-1">
-      {filter === "all"
-        ? "There are no appointments yet."
-        : filter === "accepted"
-        ? "No accepted appointments in last 7 days."
-        : `No ${filter} appointments available.`}
-    </p>
+            <p className="text-sm text-slate-400 mt-1">
+              {filter === "all"
+                ? "There are no appointments yet."
+                : filter === "accepted"
+                  ? "No accepted appointments in last 7 days."
+                  : `No ${filter} appointments available.`}
+            </p>
 
-  </div>
+          </div>
 
-) : (
+        ) : (
 
-  paginatedAppointments?.map((item) => (
+          paginatedAppointments?.map((item) => (
 
-    <div
-      key={item._id}
-      className="grid grid-cols-12 items-center px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
-    >
+            <div
+              key={item._id}
+              className="grid grid-cols-12 items-center px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700 transition"
+            >
 
-      <div className="col-span-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-full bg-[#5e72e4] text-white flex items-center justify-center text-sm font-semibold">
-          {item.name?.charAt(0)}
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-slate-700 dark:text-white">
-            {item.name}
-          </p>
-          <p className="text-xs text-slate-400">Patient</p>
-        </div>
-      </div>
+              <div className="col-span-5 flex items-center gap-4">
+                <div className="w-11 h-11 rounded-full bg-[#5e72e4] text-white flex items-center justify-center text-sm font-semibold">
+                  {item.name?.charAt(0)}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-700 dark:text-white">
+                    {item.name}
+                  </p>
+                  <p className="text-xs text-slate-400">Patient</p>
+                </div>
+              </div>
 
-      <div className="col-span-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
-        {allDoctors.find((d) => d._id === item.doctorId)?.name || "—"}
-      </div>
+              <div className="col-span-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
+                {allDoctors.find((d) => d._id === item.doctorId)?.name || "—"}
+              </div>
 
-      <div className="col-span-3">
-        <p className="text-sm text-slate-700 dark:text-white">
-          {new Date(item.date).toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
-        </p>
-        <p className="text-xs text-slate-400">{item.time}</p>
-      </div>
+              <div className="col-span-3">
+                <p className="text-sm text-slate-700 dark:text-white">
+                  {new Date(item.date).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+                <p className="text-xs text-slate-400">{item.time}</p>
+              </div>
 
-      <div className="col-span-1">
-        <StatusBadge status={item.status} />
-      </div>
+              <div className="col-span-1">
+                <StatusBadge status={item.status} />
+              </div>
 
-      <div className="col-span-1 flex justify-end">
-        <button
-          onClick={() => setSelectedAppointment(item)}
-          disabled={acceptedAppointments?.some((a) => a._id === item._id)}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition ${
-            acceptedAppointments?.some((a) => a._id === item._id)
-              ? "bg-slate-100 dark:bg-slate-700 cursor-not-allowed"
-              : "bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800"
-          }`}
-        >
-          <FontAwesomeIcon 
-            icon={faChevronRight} 
-            className={acceptedAppointments?.some((a) => a._id === item._id)
-              ? "text-slate-400 dark:text-slate-500"
-              : "text-blue-600 dark:text-blue-400"
-            } 
-          />
-        </button>
-      </div>
+              <div className="col-span-1 flex justify-end">
+                <button
+                  onClick={() => setSelectedAppointment(item)}
+                  disabled={acceptedAppointments?.some((a) => a._id === item._id)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition ${acceptedAppointments?.some((a) => a._id === item._id)
+                      ? "bg-slate-100 dark:bg-slate-700 cursor-not-allowed"
+                      : "bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-800"
+                    }`}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronRight}
+                    className={acceptedAppointments?.some((a) => a._id === item._id)
+                      ? "text-slate-400 dark:text-slate-500"
+                      : "text-blue-600 dark:text-blue-400"
+                    }
+                  />
+                </button>
+              </div>
 
-    </div>
-  ))
-)}
+            </div>
+          ))
+        )}
 
       </div>
 
@@ -360,7 +356,7 @@ const totalPages = Math.ceil(
 
 /* ---------- STAT CARD ---------- */
 
-function StatCard({ title, value, note, icon, iconColor }:any) {
+function StatCard({ title, value, note, icon, iconColor }: any) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-[0_20px_27px_0_rgb(0_0_0_/5%)] px-6 py-5 flex items-center justify-between border border-slate-200 dark:border-slate-700">
       <div>
@@ -384,13 +380,13 @@ function StatCard({ title, value, note, icon, iconColor }:any) {
 
 /* ---------- STATUS BADGE ---------- */
 
-function StatusBadge({ status }:any) {
+function StatusBadge({ status }: any) {
 
   const key = status?.toLowerCase().includes("confirm")
     ? "confirmed"
     : status?.toLowerCase().includes("cancel")
-    ? "cancelled"
-    : "pending";
+      ? "cancelled"
+      : "pending";
 
   const styles = {
     confirmed: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",

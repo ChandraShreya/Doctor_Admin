@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -29,6 +28,13 @@ const schema = yup.object({
         .required("Duration is required"),
 });
 
+type DoctorFormType = {
+  name: string;
+  fees: number;
+  startTime: string;
+  endTime: string;
+  duration: number;
+};
 export default function DoctorProfilePage() {
 
     const { id } = useParams();
@@ -80,7 +86,7 @@ export default function DoctorProfilePage() {
 
             reset({
     name: doctor.name || "",
-    fees: doctor.fees || 0,
+    fees: Number(doctor.fees) || 0,
     startTime: schedule?.startTime || "",
     endTime: schedule?.endTime || "",
     duration: schedule?.slotDuration || 0,
@@ -92,10 +98,10 @@ export default function DoctorProfilePage() {
         return <div className="p-6 text-slate-500">Loading doctor...</div>;
     }
 
-const onSubmit = async (data: { name: string; fees: number; startTime: string; endTime: string; duration: number }) => {
+const onSubmit = async (data: DoctorFormType) => {
   const payload = {
     name: data.name,
-    fees: Number(data.fees),
+    fees: String(data.fees),
     schedule: {
       startTime: data.startTime,
       endTime: data.endTime,
@@ -208,6 +214,7 @@ const onSubmit = async (data: { name: string; fees: number; startTime: string; e
                                     Fees
                                 </label>
                                 <input
+                                type="number"
                                     {...register("fees")}
                                     className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500/40"
                                 />

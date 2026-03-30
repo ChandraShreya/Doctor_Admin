@@ -51,7 +51,7 @@ export default function DoctorCreateModal({ setShowModal }: any) {
   const onSubmit = async (data: any) => {
     const payload:IDoctorCreatePayload = {
       name: data.name,
-      fees: Number(data.fees),
+      fees: data.fees,
       departmentId: data.departmentId,
       schedule: {
         startTime: data.startTime,
@@ -211,7 +211,7 @@ export default function DoctorCreateModal({ setShowModal }: any) {
                   type="number"
                   placeholder="Slot (min)"
                   {...register("slotDuration")}
-                  className="px-3 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="px-3 py-2 rounded-xl border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 />
 
               </div>
