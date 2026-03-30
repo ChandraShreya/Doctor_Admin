@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import {
   getAllDoctors,
   getDepartmentList,
@@ -9,15 +10,7 @@ import {
   acceptedAppointment,
   departmentwiseDoctor,
 } from "@/redux/slice/doctorSlice";
-import { IDoctor, IDepartment, IAppointment } from "@/typescript";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserDoctor,
-  faHospital,
-  faCalendarCheck,
-  faClock,
-} from "@fortawesome/free-solid-svg-icons";
 
 import Skeleton from "@mui/material/Skeleton";
 import {
@@ -31,12 +24,12 @@ export default function Dashboard() {
   const [deptDoctors, setDeptDoctors] = useState([]);
   const [hasInitialized, setHasInitialized] = useState(false);
 
-  const dispatch = useDispatch();
-  const allDoctors = useSelector((state) => state.doctor.allDoctors);
-  const departments = useSelector((state) => state.doctor.departmentList);
-  const appointments = useSelector((state) => state.doctor.appointmentList);
-  const accepted = useSelector((state) => state.doctor.acceptedAppointments);
-  const loading = useSelector((state) => state.doctor.loading);
+  const dispatch = useDispatch<AppDispatch>();
+  const allDoctors = useSelector((state: RootState) => state.doctor.allDoctors);
+  const departments = useSelector((state: RootState) => state.doctor.departmentList);
+  const appointments = useSelector((state: RootState) => state.doctor.appointmentList);
+  const accepted = useSelector((state: RootState) => state.doctor.acceptedAppointments);
+  const loading = useSelector((state: RootState) => state.doctor.loading);
   const router = useRouter()
 
   // First effect: Load appointments and departments (only once on mount)
@@ -451,7 +444,7 @@ export default function Dashboard() {
 
 
 
-function StatusBadge({ status }) {
+function StatusBadge({ status }:any) {
   const key = status?.toLowerCase().includes("confirm")
     ? "confirmed"
     : status?.toLowerCase().includes("cancel")

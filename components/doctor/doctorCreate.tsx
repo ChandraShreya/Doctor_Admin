@@ -2,16 +2,17 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import { useEffect } from "react";
 import { doctorCreate, doctorList, getDepartmentList } from "@/redux/slice/doctorSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faStethoscope, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner";
-import { IDoctorForm, IDoctor, IDepartment } from "@/typescript";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { IDoctorCreatePayload, IPayload } from "@/typescript/doctor.interface";
 
 /* ================= VALIDATION ================= */
 
@@ -28,10 +29,10 @@ const schema = yup.object().shape({
 });
 
 export default function DoctorCreateModal({ setShowModal }: any) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const departmentList = useSelector(
-    (state: any) => state.doctor.departmentList
+    (state: RootState) => state.doctor.departmentList
   );
 
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function DoctorCreateModal({ setShowModal }: any) {
   });
 
   const onSubmit = async (data: any) => {
-    const payload = {
+    const payload:IDoctorCreatePayload = {
       name: data.name,
-      fees: data.fees,
+      fees: Number(data.fees),
       departmentId: data.departmentId,
       schedule: {
         startTime: data.startTime,

@@ -7,7 +7,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { Cookies } from "react-cookie";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import * as yup from "yup";
 import { useState } from "react";
@@ -19,6 +18,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 
 const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -32,8 +33,8 @@ const schema = yup.object({
 export default function Login() {
   const router = useRouter();
   const cookies = new Cookies();
-  const dispatch = useDispatch();
-  const selector = useSelector((state) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const selector = useSelector((state: RootState) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -47,7 +48,7 @@ export default function Login() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
     try {
       const result = await dispatch(authSignIn(data)).unwrap();
 

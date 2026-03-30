@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import {
   acceptedAppointment,
   appointmentList,
@@ -10,7 +11,6 @@ import {
   confirmAppointment,
   getAllDoctors,
 } from "@/redux/slice/doctorSlice";
-import { IAppointment, IDoctor } from "@/typescript";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,22 +24,23 @@ import {
 import AppointmentModal from "./appointmentmodal";
 import Skeleton from "@mui/material/Skeleton";
 import { toast } from "sonner";
+import { IAppointment } from "@/typescript/doctor.interface";
 
 export default function AppointmentList() {
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [filter, setFilter] = useState("all");
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<IAppointment | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const allDoctors = useSelector((state) => state.doctor.allDoctors);
-  const appointments = useSelector((state) => state.doctor.appointmentList);
+  const allDoctors = useSelector((state: RootState) => state.doctor.allDoctors);
+  const appointments = useSelector((state: RootState) => state.doctor.appointmentList);
   const acceptedAppointments = useSelector(
-    (state) => state.doctor.acceptedAppointments
+    (state: RootState) => state.doctor.acceptedAppointments
   );
-  const loading = useSelector((state) => state.doctor.loading);
+  const loading = useSelector((state: RootState) => state.doctor.loading);
 
   useEffect(() => {
     dispatch(appointmentList());
@@ -47,12 +48,12 @@ export default function AppointmentList() {
     dispatch(getAllDoctors());
   }, [dispatch]);
 
-  // Reset to page 1 when filter changes
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
 
-  const handleConfirm = async (id) => {
+  const handleConfirm = async (id: string) => {
     try {
       const response = await dispatch(confirmAppointment(id)).unwrap();
       toast.success(response?.message || "Appointment confirmed successfully");
@@ -62,7 +63,7 @@ export default function AppointmentList() {
     }
   };
 
-  const handleCancel = async (id) => {
+  const handleCancel = async (id: string) => {
     try {
       const response = await dispatch(cancelAppointment(id)).unwrap();
       toast.success(response?.message || "Appointment cancelled successfully");
@@ -77,14 +78,11 @@ export default function AppointmentList() {
   const totalAppointments = appointments?.length || 0;
 
  const confirmed =
-  (appointments?.filter(
-    (a) => a.status?.toLowerCase() === "confirmed"
-  ).length || 0) +
+  (appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === "confirmed").length || 0) +
   (acceptedAppointments?.length || 0);
 
   const pending =
-    appointments?.filter((a) => a.status?.toLowerCase() === "pending")
-      .length || 0;
+    appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === "pending").length || 0;
 
   // const cancelled =
   //   appointments?.filter((a) => a.status?.toLowerCase() === "cancelled")
@@ -92,30 +90,28 @@ export default function AppointmentList() {
 
   /* ---------- ACCEPTED LAST 7 DAYS ---------- */
 
-  const last7DaysAccepted = acceptedAppointments?.filter((a) => {
+  const last7DaysAccepted = acceptedAppointments?.filter((a: IAppointment) => {
     const appointmentDate = new Date(a.date); // change to createdAt if needed
     const today = new Date();
-    const diffTime = today - appointmentDate;
+    const diffTime = today.getTime() - appointmentDate.getTime();
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
     return diffDays <= 7;
   });
 
   /* ---------- FILTER ---------- */
 
-  const filteredAppointments = (() => {
+  const filteredAppointments: IAppointment[] | undefined = (() => {
     if (filter === "all") return appointments;
 
     if (filter === "accepted") return last7DaysAccepted;
 
-    return appointments?.filter(
-      (a) => a.status?.toLowerCase() === filter
-    );
+    return appointments?.filter((a: IAppointment) => a.status?.toLowerCase() === filter);
   })();
 
   const paginatedAppointments = filteredAppointments?.slice(
-  (currentPage - 1) * itemsPerPage,
-  currentPage * itemsPerPage
-);
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
 const totalPages = Math.ceil(
   (filteredAppointments?.length || 0) / itemsPerPage
@@ -364,7 +360,7 @@ const totalPages = Math.ceil(
 
 /* ---------- STAT CARD ---------- */
 
-function StatCard({ title, value, note, icon, iconColor }) {
+function StatCard({ title, value, note, icon, iconColor }:any) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-[0_20px_27px_0_rgb(0_0_0_/5%)] px-6 py-5 flex items-center justify-between border border-slate-200 dark:border-slate-700">
       <div>
@@ -388,7 +384,7 @@ function StatCard({ title, value, note, icon, iconColor }) {
 
 /* ---------- STATUS BADGE ---------- */
 
-function StatusBadge({ status }) {
+function StatusBadge({ status }:any) {
 
   const key = status?.toLowerCase().includes("confirm")
     ? "confirmed"

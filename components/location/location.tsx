@@ -3,6 +3,7 @@
 import { createLocation } from "@/redux/slice/locationSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -27,8 +28,8 @@ const schema = yup.object({
 });
 
 export default function LocationPage() {
-  const dispatch = useDispatch<any>();
-  const selector = useSelector((state: any) => state.location);
+  const dispatch = useDispatch<AppDispatch>();
+  const selector = useSelector((state: RootState) => state.location);
 
   const {
     register,
@@ -224,8 +225,8 @@ const onSubmit = async (data: any) => {
             type="button"
             onClick={() => {
               navigator.geolocation.getCurrentPosition((pos) => {
-                setValue("lat", pos.coords.latitude.toString());
-                setValue("lng", pos.coords.longitude.toString());
+                setValue("lat", pos.coords.latitude);
+                setValue("lng", pos.coords.longitude);
               });
             }}
             className="text-xs text-[#5e72e4] hover:underline"
@@ -238,7 +239,7 @@ const onSubmit = async (data: any) => {
 
             <button
               type="button"
-              onClick={reset}
+              onClick={()=>reset()}
               className="flex-1 py-2.5 rounded-xl text-sm font-medium
               bg-[#f1f3ff] text-slate-600 hover:bg-[#e6eaff]"
             >

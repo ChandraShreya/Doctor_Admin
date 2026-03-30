@@ -1,7 +1,4 @@
 
-
-
-
 "use client";
 
 import { useState } from "react";
@@ -12,7 +9,6 @@ import {
   faCalendar,
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
-import { IAppointment } from "@/typescript";
 
 export default function AppointmentModal({
   appointment,

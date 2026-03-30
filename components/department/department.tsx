@@ -3,8 +3,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IDepartment, IDoctor } from "@/typescript";
 import Skeleton from "@mui/material/Skeleton";
 
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -20,23 +20,23 @@ import { confirmDelete, showDeleteError, showDeleteSuccess } from "../sweetAlert
 import { toast } from "sonner";
 import DepartmentDoctorsModal from "./departmentwiseDoctorModal";
 import DepartmentModal from "./departmentCreate";
+import { IDoctor } from "@/typescript/doctor.interface";
 
 export default function DepartmentList() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const { departmentList, loading } = useSelector(
-    (state: any) => state.doctor
+    (state: RootState) => state.doctor
   );
 
   const [showModal, setShowModal] = useState(false);
   const [showDoctorsModal, setShowDoctorsModal] = useState(false);
-  const [departmentDoctors, setDepartmentDoctors] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [deptCounts, setDeptCounts] = useState({});
-  const [departmentDoctorsMap, setDepartmentDoctorsMap] = useState({});
+  const [deptCounts, setDeptCounts] = useState<Record<string, number>>({});
+  const [departmentDoctorsMap, setDepartmentDoctorsMap] = useState<Record<string, IDoctor[]>>({});
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
   const [doctorLoading, setDoctorLoading] = useState(false);
-  const fetchedRef = useRef(false); 
+  const fetchedRef = useRef(false);
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -50,7 +50,7 @@ export default function DepartmentList() {
     description: "",
   });
 
-    useEffect(() => {
+  useEffect(() => {
     if (!departmentList?.length) {
       dispatch(getDepartmentList());
     }
@@ -90,56 +90,55 @@ export default function DepartmentList() {
     setForm({
       name: "",
       description: "",
-      themeIdx: 0,
     });
 
     setShowModal(false);
   };
 
-const handleDeleteDepartment = async (id: string, name: string) => {
+  const handleDeleteDepartment = async (id: string, name: string) => {
 
-  const confirmed = await confirmDelete("Department", name);
-  if (!confirmed) return;
+    const confirmed = await confirmDelete("Department", name);
+    if (!confirmed) return;
 
-  try {
-    await dispatch(departmentDelete(id)).unwrap();
+    try {
+      await dispatch(departmentDelete(id)).unwrap();
 
-    
-    showDeleteSuccess("Department", name);
 
-  } catch (err) {
-    console.log(err);
+      showDeleteSuccess("Department", name);
 
-    
-    showDeleteError("Department", name);
-  }
-};
+    } catch (err) {
+      console.log(err);
 
-const handleViewDoctors = async (id: string, name: string) => {
-  setSelectedDepartment(name);
-  setSelectedDepartmentId(id);
-  setShowDoctorsModal(true);
 
-  // if already cached → no loading needed
-  if (departmentDoctorsMap[id]) return;
+      showDeleteError("Department", name);
+    }
+  };
 
-  setDoctorLoading(true); // 👈 start loading
+  const handleViewDoctors = async (id: string, name: string) => {
+    setSelectedDepartment(name);
+    setSelectedDepartmentId(id);
+    setShowDoctorsModal(true);
 
-  try {
-    const res = await dispatch(
-      departmentwiseDoctor(id)
-    ).unwrap();
+    // if already cached → no loading needed
+    if (departmentDoctorsMap[id]) return;
 
-    setDepartmentDoctorsMap((prev: any) => ({
-      ...prev,
-      [id]: res.data || [],
-    }));
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setDoctorLoading(false); // 👈 stop loading
-  }
-};
+    setDoctorLoading(true);
+
+    try {
+      const res = await dispatch(
+        departmentwiseDoctor(id)
+      ).unwrap();
+
+      setDepartmentDoctorsMap((prev: any) => ({
+        ...prev,
+        [id]: res.data || [],
+      }));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDoctorLoading(false);
+    }
+  };
 
 
   useEffect(() => {
@@ -148,7 +147,7 @@ const handleViewDoctors = async (id: string, name: string) => {
     fetchedRef.current = true;
 
     const fetchCounts = async () => {
-      const counts = {};
+      const counts: Record<string, number> = {};
 
       for (const dept of departmentList) {
         try {
@@ -156,7 +155,7 @@ const handleViewDoctors = async (id: string, name: string) => {
             departmentwiseDoctor(dept._id)
           ).unwrap();
 
-          counts[dept._id] = res.count || 0;
+          counts[dept._id] = res.data?.length || 0;
         } catch {
           counts[dept._id] = 0;
         }
@@ -169,11 +168,11 @@ const handleViewDoctors = async (id: string, name: string) => {
   }, [departmentList]);
 
 
-//   useEffect(() => {
-//   if (!departmentList?.length) {
-//     dispatch(getDepartmentList());
-//   }
-// }, []);
+  //   useEffect(() => {
+  //   if (!departmentList?.length) {
+  //     dispatch(getDepartmentList());
+  //   }
+  // }, []);
 
   return (
     <div className="space-y-6">

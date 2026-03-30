@@ -1,12 +1,12 @@
 
 import { axiosInstance } from "@/api/axios/axios"
 import { endpoints } from "@/api/endpoints/endpoints"
+import { IAuthSignInPayload, IAuthSignInResponse } from "@/typescript/auth.interface"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import axios from "axios"
 import { log } from "console"
 import { Cookie } from "next/font/google"
 import { Cookies } from "react-cookie"
-import { IAuthState, IUser, IAuthSignInPayload, IAuthSignInResponse } from "@/typescript"
 
 const initialState={
     loading:false,

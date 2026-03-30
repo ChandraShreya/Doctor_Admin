@@ -3,7 +3,6 @@
 
 import { departmentwiseDoctor, doctorDelete, doctorList, getDepartmentList } from "@/redux/slice/doctorSlice";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -18,22 +17,24 @@ import { confirmDelete, showDeleteError, showDeleteSuccess } from "../sweetAlert
 import { useRouter } from "next/navigation";
 import Skeleton from "@mui/material/Skeleton";
 import DoctorCreateModal from "./doctorCreate";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store/store";
 
 export default function DoctorList() {
 
-  const dispatch = useDispatch();
-  const doctors = useSelector((state) => state.doctor.doctorList);
-  const doctorTotal = useSelector((state) => state.doctor.doctorTotal);
-  const loading = useSelector((state) => state.doctor.loading);
+  const dispatch = useDispatch<AppDispatch>();
+  const doctors = useSelector((state:RootState) => state.doctor.doctorList);
+  const doctorTotal = useSelector((state:RootState) => state.doctor.doctorTotal);
+  const loading = useSelector((state:RootState) => state.doctor.loading);
 
   const [showModal, setShowModal] = useState(false);
-  const [departmentId, setDepartmentId] = useState("");
+  const [departmentId, setDepartmentId] = useState<string>("");
   const [editDoctor, setEditDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const limit = 6;
   const totalPages = Math.ceil(doctorTotal / limit);
-  const departments = useSelector((state) => state.doctor.departmentList);
+  const departments = useSelector((state:RootState) => state.doctor.departmentList);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function DoctorList() {
 
 
 
-const handleDeleteDoctor = async (id, doctorName) => {
+const handleDeleteDoctor = async (id:string, doctorName:string) => {
 
   const confirmed = await confirmDelete("Doctor", doctorName);
   if (!confirmed) return;
@@ -195,7 +196,7 @@ const handleDeleteDoctor = async (id, doctorName) => {
             ) : doctors?.length === 0 ? (
 
               <tr>
-                <td colSpan="5" className="text-center py-12 text-slate-400">
+                <td colSpan={5} className="text-center py-12 text-slate-400">
 
                   <div className="flex flex-col items-center gap-2">
 
@@ -245,7 +246,7 @@ const handleDeleteDoctor = async (id, doctorName) => {
                     </td>
 
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">
-                      {doc.departmentId.name ||
+                      {
                         departments.find((d) => d._id === doc.departmentId)?.name ||
                         "—"}
                     </td>

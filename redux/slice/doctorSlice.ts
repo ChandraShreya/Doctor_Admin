@@ -1,25 +1,15 @@
-// import axiosInstance from "@/api/axios/axios";
+
 import { axiosInstance } from "@/api/axios/axios";
 import { endpoints } from "@/api/endpoints/endpoints";
+import { IAllDoctorsResponse, IAppointmentResponse, IDepartmentCreatePayload, IDoctor, IDoctorCreatePayload, IDoctorEditPayload, IDoctorListPayload, IDoctorState, IPaginatedDoctorResponse } from "@/typescript/doctor.interface";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { create } from "domain";
 import { Cookies } from "react-cookie";
-import {
-    IDoctorState,
-    IDoctor,
-    IDepartment,
-    IAppointment,
-    IDepartmentCreatePayload,
-    IDoctorCreatePayload,
-    IDoctorEditPayload,
-    IDoctorListPayload,
-    IPaginatedDoctorResponse,
-    IAppointmentResponse
-} from "@/typescript";
 
 
-const initialState = {
+
+const initialState: IDoctorState = {
     loading: false,
     department: null,
     departmentId: null,
@@ -36,7 +26,10 @@ const initialState = {
 }
 
 const cookie = new Cookies()
-export const departmentCreate = createAsyncThunk(
+export const departmentCreate = createAsyncThunk<
+  any, 
+  IDepartmentCreatePayload 
+>(
     "departmentCreate",
     async (payload) => {
         const response = await axiosInstance.post(endpoints.doctor.department, payload)
@@ -85,7 +78,7 @@ export const doctorList = createAsyncThunk<IPaginatedDoctorResponse, IDoctorList
     }
 )
 
-export const getAllDoctors = createAsyncThunk<IDoctor[]>(
+export const getAllDoctors = createAsyncThunk<IAllDoctorsResponse>(
     "getAllDoctors",
     async () => {
         const response = await axiosInstance.get(endpoints.doctor.doctorList)
@@ -119,7 +112,10 @@ export const doctorDelete = createAsyncThunk<{ id: string }, string>(
     }
 )
 
-export const departmentwiseDoctor = createAsyncThunk(
+export const departmentwiseDoctor = createAsyncThunk<
+  { data: IDoctor[]; totalItems: number }, 
+  string                                   
+>(
     "departmentwiseDoctor",
     async (departmentId) => {
 
@@ -142,9 +138,13 @@ export const appointmentList = createAsyncThunk<IAppointmentResponse>(
     }
 )
 
-export const confirmAppointment = createAsyncThunk(
+export const confirmAppointment = createAsyncThunk<{ id: string; data: any }, string>(
+
+
+    
     "confirmAppointment",
     async (id) => {
+
 
         const response = await axiosInstance.put(
             `/admin/doctor/appointment/${id}`
@@ -156,7 +156,7 @@ export const confirmAppointment = createAsyncThunk(
     }
 );
 
-export const cancelAppointment = createAsyncThunk(
+export const cancelAppointment = createAsyncThunk<{ id: string; data: any }, string>(
     "cancelAppointment",
     async (id) => {
 

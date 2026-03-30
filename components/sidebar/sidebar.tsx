@@ -21,13 +21,13 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store/store";
 import { logOut } from "@/redux/slice/authSlice";
 import {  confirmLogout, showLogoutSuccess } from "../sweetAlert/confirmLogOut";
-import { UserRole } from "@/typescript";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [isDark, setIsDark] = useState(false);
 
