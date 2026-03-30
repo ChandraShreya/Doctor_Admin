@@ -3,7 +3,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { doctorCreate, doctorList, getDepartmentList } from "@/redux/slice/doctorSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faStethoscope, faXmark } from "@fortawesome/free-solid-svg-icons";
