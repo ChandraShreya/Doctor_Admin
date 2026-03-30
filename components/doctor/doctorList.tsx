@@ -29,6 +29,7 @@ export default function DoctorList() {
 
   const [showModal, setShowModal] = useState(false);
   const [departmentId, setDepartmentId] = useState<string>("");
+  const [selectedDept, setSelectedDept] = useState<any>(null);
   const [editDoctor, setEditDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -43,11 +44,14 @@ export default function DoctorList() {
 
   useEffect(() => {
     if (departmentId) {
+      const dept = departments.find((d) => d._id === departmentId);
+      setSelectedDept(dept);
       dispatch(departmentwiseDoctor(departmentId));
     } else {
+      setSelectedDept(null);
       dispatch(doctorList({ page, limit, search }));
     }
-  }, [dispatch, page, search, departmentId]);
+  }, [dispatch, page, search, departmentId, departments]);
 
   const handleAddDoctor = () => {
     setEditDoctor(null);
@@ -247,8 +251,8 @@ const handleDeleteDoctor = async (id:string, doctorName:string) => {
 
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-slate-600 dark:text-slate-300">
                       {
-                        departments.find((d) => d._id === doc.departmentId)?.name ||
-                        "—"}
+                        departmentId && selectedDept ? selectedDept.name : (departments.find((d) => d._id === doc.departmentId)?.name || "—")
+                      }
                     </td>
 
                     <td className="px-3 sm:px-6 py-3 sm:py-4">

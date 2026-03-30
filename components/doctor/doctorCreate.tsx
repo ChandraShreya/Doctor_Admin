@@ -35,9 +35,7 @@ export default function DoctorCreateModal({ setShowModal }: any) {
     (state: RootState) => state.doctor.departmentList
   );
 
-  useEffect(() => {
-    dispatch(getDepartmentList());
-  }, [dispatch]);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -61,12 +59,15 @@ export default function DoctorCreateModal({ setShowModal }: any) {
     };
 
     try {
+      setLoading(true);
       const response = await dispatch(doctorCreate(payload)).unwrap();
       toast.success(response.message);
       dispatch(doctorList({ page: 1, limit: 6 }));
       setShowModal(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -238,13 +239,28 @@ export default function DoctorCreateModal({ setShowModal }: any) {
 
             <button
               type="submit"
+              disabled={loading}
               className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all"
               style={{
                 background: "linear-gradient(to right, #5e72e4, #7b8cf5)",
+                opacity: loading ? 0.8 : 1,
               }}
             >
-              <FontAwesomeIcon icon={faPlus} />
-              Create
+              {loading ? (
+                <>
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" />
+                  </div>
+                  <span className="text-xs">Creating...</span>
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faPlus} />
+                  Create
+                </>
+              )}
             </button>
 
           </div>
