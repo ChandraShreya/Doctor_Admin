@@ -21,15 +21,15 @@ export default function Navbar({ setOpen }: any) {
       title: "Dashboard",
       subtitle: "Overview of your hospital",
     },
-    "/appointments": {
+    "/appointment": {
       title: "Appointments",
       subtitle: "Manage patient bookings",
     },
-    "/doctors": {
+    "/dashboard/doctors": {
       title: "Doctors",
       subtitle: "Manage doctor profiles",
     },
-    "/departments": {
+    "/department": {
       title: "Departments",
       subtitle: "Manage hospital departments",
     },
