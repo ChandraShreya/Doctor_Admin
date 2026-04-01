@@ -70,10 +70,10 @@ export default function DepartmentDoctorsModal({
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5 max-h-[500px] overflow-y-auto">
 
           {doctorLoading ? (
-  <p>Loading doctors...</p>
-) : doctors.length === 0 ? (
-  <p className="text-xs text-slate-500">No doctors found</p>
-) : (
+            <p>Loading doctors...</p>
+          ) : doctors.length === 0 ? (
+            <p className="text-xs text-slate-500">No doctors found</p>
+          ) : (
             doctors.map((doc: any) => (
               <div
                 key={doc._id}

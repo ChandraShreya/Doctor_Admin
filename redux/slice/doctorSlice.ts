@@ -26,53 +26,61 @@ const initialState: IDoctorState = {
 
 const cookie = new Cookies()
 export const departmentCreate = createAsyncThunk<
-  any, 
-  IDepartmentCreatePayload 
+    any,
+    IDepartmentCreatePayload,
+    { rejectValue: string }
 >(
     "departmentCreate",
-    async (payload) => {
+    async (payload, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(endpoints.doctor.department, payload)
-            console.log("department create",response)
+            console.log("department create", response)
             return response.data
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Department not found.");
-                else if (status === 400) throw new Error("Invalid data provided.");
-                else throw new Error(error.response.data?.message || "Request failed.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Department not found.");
+                else if (status === 400) return rejectWithValue("Invalid data provided.");
+                else return rejectWithValue(error.response.data?.message || "Request failed.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 
 )
 
-export const getDepartmentList = createAsyncThunk(
+export const getDepartmentList = createAsyncThunk<
+    any,
+    void,
+    { rejectValue: string }
+>(
     "getDepartmentList",
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.doctor.departmentList)
-            console.log("department list",response)
+            console.log("department list", response)
             return response.data
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Departments not found.");
-                else throw new Error(error.response.data?.message || "Failed to load departments.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Departments not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load departments.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const departmentDelete = createAsyncThunk<{ id: string }, string>(
+export const departmentDelete = createAsyncThunk<{ id: string }, string,
+    { rejectValue: string }
+
+>(
     "departmentDelete",
-    async (id) => {
+    async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(endpoints.doctor.departmentDelete,
                 { id }
@@ -82,18 +90,24 @@ export const departmentDelete = createAsyncThunk<{ id: string }, string>(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Department not found.");
-                else throw new Error(error.response.data?.message || "Failed to delete department.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Department not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to delete department.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
-export const doctorCreate = createAsyncThunk<any, IDoctorCreatePayload>(
+
+
+export const doctorCreate = createAsyncThunk<
+    any,
+    IDoctorCreatePayload,
+    { rejectValue: string }
+>(
     "doctorCreate",
-    async (payload) => {
+    async (payload, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(endpoints.doctor.doctorCreate, payload)
             console.log("doctor create", response)
@@ -101,19 +115,23 @@ export const doctorCreate = createAsyncThunk<any, IDoctorCreatePayload>(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 400) throw new Error("Invalid doctor data.");
-                else throw new Error(error.response.data?.message || "Failed to create doctor.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 400) return rejectWithValue("Invalid doctor data.");
+                else return rejectWithValue(error.response.data?.message || "Failed to create doctor.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const doctorList = createAsyncThunk<IPaginatedDoctorResponse, IDoctorListPayload>(
+export const doctorList = createAsyncThunk<
+    IPaginatedDoctorResponse,
+    IDoctorListPayload,
+    { rejectValue: string }
+>(
     "doctorList",
-    async (payload) => {
+    async (payload, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.doctor.doctorList,
                 { params: payload }
@@ -123,19 +141,19 @@ export const doctorList = createAsyncThunk<IPaginatedDoctorResponse, IDoctorList
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Doctors not found.");
-                else throw new Error(error.response.data?.message || "Failed to load doctors.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Doctors not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load doctors.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const getAllDoctors = createAsyncThunk<IAllDoctorsResponse>(
+export const getAllDoctors = createAsyncThunk<IAllDoctorsResponse, void, { rejectValue: string }>(
     "getAllDoctors",
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.doctor.doctorList)
             console.log("all doctors", response)
@@ -143,19 +161,23 @@ export const getAllDoctors = createAsyncThunk<IAllDoctorsResponse>(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Doctors not found.");
-                else throw new Error(error.response.data?.message || "Failed to load all doctors.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Doctors not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load all doctors.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const doctorEdit = createAsyncThunk<any, IDoctorEditPayload>(
+export const doctorEdit = createAsyncThunk<
+    any,
+    IDoctorEditPayload,
+    { rejectValue: string }
+>(
     "doctorEdit",
-    async ({ id, data }) => {
+    async ({ id, data }, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(endpoints.doctor.doctorEdit, {
                 id,
@@ -168,20 +190,24 @@ export const doctorEdit = createAsyncThunk<any, IDoctorEditPayload>(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Doctor not found.");
-                else if (status === 400) throw new Error("Invalid update data.");
-                else throw new Error(error.response.data?.message || "Failed to update doctor.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Doctor not found.");
+                else if (status === 400) return rejectWithValue("Invalid update data.");
+                else return rejectWithValue(error.response.data?.message || "Failed to update doctor.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const doctorDelete = createAsyncThunk<{ id: string }, string>(
+export const doctorDelete = createAsyncThunk<
+    { id: string },
+    string,
+    { rejectValue: string }
+>(
     "doctorDelete",
-    async (id) => {
+    async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post(endpoints.doctor.doctorDelete,
                 { id }
@@ -191,22 +217,26 @@ export const doctorDelete = createAsyncThunk<{ id: string }, string>(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Doctor not found.");
-                else throw new Error(error.response.data?.message || "Failed to delete doctor.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Doctor not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to delete doctor.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
 export const departmentwiseDoctor = createAsyncThunk<
-  { data: IDoctor[]; totalItems: number }, 
-  string                                   
+    {
+        data: IDoctor[];
+        totalItems: number
+    },
+    string,
+    { rejectValue: string }
 >(
     "departmentwiseDoctor",
-    async (departmentId) => {
+    async (departmentId, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(
                 `/admin/departments/${departmentId}/doctors`
@@ -217,43 +247,51 @@ export const departmentwiseDoctor = createAsyncThunk<
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Department or doctors not found.");
-                else throw new Error(error.response.data?.message || "Failed to load doctors by department.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Department or doctors not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load doctors by department.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 );
 
 
-export const appointmentList = createAsyncThunk<IAppointmentResponse>(
+export const appointmentList = createAsyncThunk<
+    IAppointmentResponse,
+    void,
+    { rejectValue: string }
+>(
     "appointmentList",
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.doctor.appointmentList)
-            console.log("appointment", response)
+            console.log("appointment list", response)
             return response.data
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Appointments not found.");
-                else throw new Error(error.response.data?.message || "Failed to load appointments.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Appointments not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load appointments.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 )
 
-export const confirmAppointment = createAsyncThunk<{ id: string; data: any }, string>(
+export const confirmAppointment = createAsyncThunk<
+    { id: string; data: any },
+    string,
+    { rejectValue: string }
+>(
 
 
-    
+
     "confirmAppointment",
-    async (id) => {
+    async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
                 `/admin/doctor/appointment/${id}`
@@ -265,19 +303,19 @@ export const confirmAppointment = createAsyncThunk<{ id: string; data: any }, st
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Appointment not found.");
-                else throw new Error(error.response.data?.message || "Failed to confirm appointment.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Appointment not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to confirm appointment.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 );
 
-export const cancelAppointment = createAsyncThunk<{ id: string; data: any }, string>(
+export const cancelAppointment = createAsyncThunk<{ id: string; data: any }, string, { rejectValue: string }>(
     "cancelAppointment",
-    async (id) => {
+    async (id, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put(
                 `/admin/doctor/appointment/cancelld/${id}`
@@ -289,19 +327,19 @@ export const cancelAppointment = createAsyncThunk<{ id: string; data: any }, str
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Appointment not found.");
-                else throw new Error(error.response.data?.message || "Failed to cancel appointment.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Appointment not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to cancel appointment.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
 );
 
-export const acceptedAppointment = createAsyncThunk(
+export const acceptedAppointment = createAsyncThunk<any, void, { rejectValue: string }>(
     "acceptedAppointment",
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get(endpoints.doctor.acceptedAppointment)
             console.log("accept appointment", response)
@@ -309,11 +347,11 @@ export const acceptedAppointment = createAsyncThunk(
         } catch (error: any) {
             if (error.response) {
                 const status = error.response.status;
-                if (status === 500) throw new Error("Server error, please try again later.");
-                else if (status === 404) throw new Error("Accepted appointments not found.");
-                else throw new Error(error.response.data?.message || "Failed to load accepted appointments.");
+                if (status === 500) return rejectWithValue("Server error, please try again later.");
+                else if (status === 404) return rejectWithValue("Accepted appointments not found.");
+                else return rejectWithValue(error.response.data?.message || "Failed to load accepted appointments.");
             } else {
-                throw new Error("Network error, check your connection.");
+                return rejectWithValue("Network error, check your connection.");
             }
         }
     }
@@ -342,7 +380,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(departmentCreate.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to create department")
+                toast.error(action.payload || "Failed to create department")
             })
 
             /*get department list*/
@@ -358,7 +396,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(getDepartmentList.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to load departments")
+                toast.error(action.payload || "Failed to load departments")
             })
 
 
@@ -376,7 +414,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(departmentDelete.rejected, (state, action) => {
                 state.loading = false;
-                toast.error(action.error?.message || "Failed to delete department")
+                toast.error(action.payload || "Failed to delete department")
             })
 
 
@@ -392,7 +430,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(doctorCreate.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to create doctor")
+                toast.error(action.payload || "Failed to create doctor")
             })
 
 
@@ -408,7 +446,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(doctorList.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to load doctors")
+                toast.error(action.payload || "Failed to load doctors")
             })
 
             /*get all doctors */
@@ -422,7 +460,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(getAllDoctors.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to load all doctors")
+                toast.error(action.payload || "Failed to load all doctors")
             })
 
             /*doctor edit*/
@@ -448,7 +486,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(doctorEdit.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to update doctor")
+                toast.error(action.payload || "Failed to update doctor")
             })
 
             /*doctor delete*/
@@ -463,7 +501,7 @@ export const doctorSlice = createSlice({
             })
             .addCase(doctorDelete.rejected, (state, action) => {
                 state.loading = false
-                toast.error(action.error?.message || "Failed to delete doctor")
+                toast.error(action.payload || "Failed to delete doctor")
             })
 
 
@@ -478,12 +516,12 @@ export const doctorSlice = createSlice({
                 state.loading = false;
                 state.doctorList = payload.data;
                 // Keep pagination correct for filtered department results
-                state.doctorTotal = payload.totalItems ?? payload.data?.length ?? 0;
+                // state.doctorTotal = payload.totalItems ?? payload.data?.length ?? 0;
             })
 
             .addCase(departmentwiseDoctor.rejected, (state, action) => {
                 state.loading = false;
-                toast.error(action.error?.message || "Failed to load doctors by department")
+                toast.error(action.payload || "Failed to load doctors by department")
             })
 
 
@@ -502,7 +540,7 @@ export const doctorSlice = createSlice({
 
             .addCase(appointmentList.rejected, (state, action) => {
                 state.loading = false;
-                toast.error(action.error?.message || "Failed to load appointments")
+                toast.error(action.payload || "Failed to load appointments")
             })
 
             /* confirm appointment */
@@ -520,7 +558,7 @@ export const doctorSlice = createSlice({
             })
 
             .addCase(confirmAppointment.rejected, (state, action) => {
-                toast.error(action.error?.message || "Failed to confirm appointment")
+                toast.error(action.payload || "Failed to confirm appointment")
             })
 
 
@@ -539,7 +577,7 @@ export const doctorSlice = createSlice({
             })
 
             .addCase(cancelAppointment.rejected, (state, action) => {
-                toast.error(action.error?.message || "Failed to cancel appointment")
+                toast.error(action.payload || "Failed to cancel appointment")
             })
             /* accept appointment*/
 
@@ -554,7 +592,7 @@ export const doctorSlice = createSlice({
 
             .addCase(acceptedAppointment.rejected, (state, action) => {
                 state.loading = false;
-                toast.error(action.error?.message || "Failed to load accepted appointments")
+                toast.error(action.payload || "Failed to load accepted appointments")
             })
 
     }

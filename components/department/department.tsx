@@ -119,7 +119,7 @@ export default function DepartmentList() {
     setSelectedDepartmentId(id);
     setShowDoctorsModal(true);
 
-    // if already cached → no loading needed
+    
     if (departmentDoctorsMap[id]) return;
 
     setDoctorLoading(true);

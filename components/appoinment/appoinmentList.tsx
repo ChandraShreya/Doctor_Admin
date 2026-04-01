@@ -9,7 +9,8 @@ import {
   appointmentList,
   cancelAppointment,
   confirmAppointment,
-  getAllDoctors,
+  doctorList,
+  getDepartmentList,
 } from "@/redux/slice/doctorSlice";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +25,7 @@ import {
 import AppointmentModal from "./appointmentmodal";
 import Skeleton from "@mui/material/Skeleton";
 import { toast } from "sonner";
-import { IAppointment } from "@/typescript/doctor.interface";
+import { IAppointment, IDoctor } from "@/typescript/doctor.interface";
 
 export default function AppointmentList() {
 
@@ -33,20 +34,53 @@ export default function AppointmentList() {
   const [filter, setFilter] = useState("all");
   const [selectedAppointment, setSelectedAppointment] = useState<IAppointment | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [allDoctors, setAllDoctors] = useState<any[]>([]);
+  const [allDepartments, setAllDepartments] = useState<any[]>([]);
+  const [fetched, setFetched] = useState(false);
   const itemsPerPage = 6;
 
-  const allDoctors = useSelector((state: RootState) => state.doctor.allDoctors);
   const appointments = useSelector((state: RootState) => state.doctor.appointmentList);
   const acceptedAppointments = useSelector(
     (state: RootState) => state.doctor.acceptedAppointments
   );
+  const doctors = useSelector((state: RootState) => state.doctor.doctorList);
   const loading = useSelector((state: RootState) => state.doctor.loading);
 
   useEffect(() => {
+    if (fetched) return;
+
+    const fetchAllDoctors = async () => {
+      let doctorsList: IDoctor[] = [];
+      let page = 1;
+      let hasMore = true;
+      while (hasMore) {
+        try {
+          const res = await dispatch(doctorList({ page, limit: 100 })).unwrap();
+          doctorsList = [...doctorsList, ...res.data];
+          if (page >= res.totalPages) hasMore = false;
+          page++;
+        } catch (error) {
+          hasMore = false;
+        }
+      }
+      setAllDoctors(doctorsList);
+    };
+
+    const fetchDepartments = async () => {
+      try {
+        const res = await dispatch(getDepartmentList()).unwrap();
+        setAllDepartments(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch departments", error);
+      }
+    };
+
+    fetchAllDoctors();
+    fetchDepartments();
     dispatch(appointmentList());
     dispatch(acceptedAppointment());
-    dispatch(getAllDoctors());
-  }, [dispatch]);
+    setFetched(true);
+  }, [dispatch, fetched]);
 
 
   useEffect(() => {
@@ -56,7 +90,7 @@ export default function AppointmentList() {
   const handleConfirm = async (id: string) => {
     try {
       const response = await dispatch(confirmAppointment(id)).unwrap();
-      toast.success(response?.message || "Appointment confirmed successfully");
+      toast.success(response.data?.message || "Appointment confirmed successfully");
       setSelectedAppointment(null);
     } catch {
       toast.error("Failed to confirm appointment");
@@ -66,11 +100,21 @@ export default function AppointmentList() {
   const handleCancel = async (id: string) => {
     try {
       const response = await dispatch(cancelAppointment(id)).unwrap();
-      toast.success(response?.message || "Appointment cancelled successfully");
+      toast.success(response.data?.message || "Appointment cancelled successfully");
       setSelectedAppointment(null);
     } catch {
       toast.error("Failed to cancel appointment");
     }
+  };
+
+  const handleOpenModal = (item: IAppointment) => {
+    const doctor = allDoctors.find(d => d._id === item.doctorId);
+    const department = allDepartments.find(d => d._id === doctor?.departmentId);
+    setSelectedAppointment({
+      ...item,
+      doctorName: doctor?.name || "Unknown Doctor",
+      departmentName: department?.name || "Unknown Department",
+    });
   };
 
   /* ---------- STATS ---------- */
@@ -248,7 +292,7 @@ export default function AppointmentList() {
               </div>
 
               <div className="col-span-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
-                {allDoctors.find((d) => d._id === item.doctorId)?.name || "—"}
+                {allDoctors?.find(doctor => doctor._id === item.doctorId)?.name || "—"}
               </div>
 
               <div className="col-span-3">
@@ -268,7 +312,7 @@ export default function AppointmentList() {
 
               <div className="col-span-1 flex justify-end">
                 <button
-                  onClick={() => setSelectedAppointment(item)}
+                  onClick={() => handleOpenModal(item)}
                   disabled={acceptedAppointments?.some((a) => a._id === item._id)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition ${acceptedAppointments?.some((a) => a._id === item._id)
                       ? "bg-slate-100 dark:bg-slate-700 cursor-not-allowed"
@@ -391,7 +435,7 @@ function StatusBadge({ status }: any) {
   const styles = {
     confirmed: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400",
     pending: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
-    // cancelled: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
+    cancelled: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
   };
 
   return (

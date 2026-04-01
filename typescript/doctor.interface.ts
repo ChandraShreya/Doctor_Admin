@@ -46,7 +46,9 @@ export interface IAppointment {
   date: string;
   time: string;
   doctorId: string;
+  doctorName?: string;
   departmentId?: string;
+  departmentName?: string;
   status: "pending" | "confirmed" | "cancelled" | "Confirmed" | "Cancelled";
   notes?: string;
   createdAt?: string;
@@ -136,8 +138,7 @@ export interface IDoctorListPayload {
 }
 
 export interface IPaginatedDoctorResponse {
-  // data?: IDoctor[];
-  doctors?: IDoctor[];
+  data: IDoctor[];
   totalItems: number;
   totalPages: number;
   currentPage?: number;

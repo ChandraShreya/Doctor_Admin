@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store/store";
+import { IDoctor } from "@/typescript/doctor.interface";
 import {
   getAllDoctors,
   getDepartmentList,
   appointmentList,
   acceptedAppointment,
   departmentwiseDoctor,
+  doctorList,
 } from "@/redux/slice/doctorSlice";
 
 
@@ -27,32 +29,49 @@ export default function Dashboard() {
 };
   const [deptDoctors, setDeptDoctors] = useState<DeptDoctor[]>([]);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [allDoctors, setAllDoctors] = useState<any[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
-  const allDoctors = useSelector((state: RootState) => state.doctor.allDoctors);
   const departments = useSelector((state: RootState) => state.doctor.departmentList);
   const appointments = useSelector((state: RootState) => state.doctor.appointmentList);
   const accepted = useSelector((state: RootState) => state.doctor.acceptedAppointments);
   const loading = useSelector((state: RootState) => state.doctor.loading);
+  const doctorsTotal = useSelector((state: RootState) => state.doctor.doctorTotal);
+
   const router = useRouter()
 
-  // First effect: Load appointments and departments (only once on mount)
+  
   useEffect(() => {
     if (hasInitialized) return;
 
-    dispatch(getAllDoctors());
+    const fetchAllDoctors = async () => {
+      let doctorsList: IDoctor[] = [];
+      let page = 1;
+      let hasMore = true;
+      let totalCount = 0;
+      while (hasMore) {
+        try {
+          const res = await dispatch(doctorList({ page, limit: 100 })).unwrap();
+          doctorsList = [...doctorsList, ...res.data];
+          totalCount = res.totalItems;
+          if (page >= res.totalPages) hasMore = false;
+          page++;
+        } catch (error) {
+          hasMore = false;
+        }
+      }
+      setAllDoctors(doctorsList);
+      
+    };
+
+    fetchAllDoctors();
     dispatch(getDepartmentList());
     dispatch(appointmentList());
     dispatch(acceptedAppointment());
 
     setHasInitialized(true);
-  }, []);
+  }, [dispatch]);
 
-  const totalDoctors = useSelector((state:RootState) => state.doctor.totalItems);
-  const totalDepartments = departments?.length || 0;
-  const totalAppointments =
-    (appointments?.length || 0) + (accepted?.length || 0);
-  const pendingAppointments = appointments?.length || 0;
 
   const latestAppointments = [...(appointments || []), ...(accepted || [])]
     ?.sort((a, b) => new Date(b.createdAt ?? "").getTime() - new Date(a.createdAt ?? "").getTime())
@@ -142,7 +161,7 @@ type DeptDoctor = {
       "
             >
               {/* Doctors */}
-              <div className="flex items-center gap-3 pr-5 border-r border-white/10">
+              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center">
                   <MedicalServices className="text-white text-[18px]" />
                 </div>
@@ -152,10 +171,13 @@ type DeptDoctor = {
                     Registered Doctors
                   </p>
                   <h3 className="text-lg font-semibold tracking-tight">
-                    {totalDoctors}
+                    {doctorsTotal}
                   </h3>
                 </div>
               </div>
+
+              {/* Divider */}
+              <div className="w-px h-8 bg-white/20" />
 
               {/* Departments */}
               <div className="flex items-center gap-3">
@@ -165,10 +187,10 @@ type DeptDoctor = {
 
                 <div className="leading-tight">
                   <p className="text-[11px] text-blue-100/80">
-                    Active Departments
+                    Departments
                   </p>
                   <h3 className="text-lg font-semibold tracking-tight">
-                    {totalDepartments}
+                    {departments?.length || 0}
                   </h3>
                 </div>
               </div>
@@ -236,7 +258,7 @@ type DeptDoctor = {
                       </p>
 
                       <p className="text-xs text-slate-400">
-                        Dr. {allDoctors.find((d) => d._id === item.doctorId)?.name || "—"}
+                        Dr. {allDoctors?.find(doctor => doctor._id === item.doctorId)?.name || "—"}
                       </p>
                     </div>
                   </div>
@@ -383,7 +405,7 @@ type DeptDoctor = {
                 {latestAppointments?.slice(0, 4).map((item) => {
 
                   const doctorName =
-                    allDoctors.find((d) => d._id === item.doctorId)?.name || "—";
+                    item.doctorName || "—";
 
                   return (
                     <tr
@@ -408,7 +430,7 @@ type DeptDoctor = {
 
                       {/* DOCTOR */}
                       <td className="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">
-                        Dr. {doctorName}
+                        {allDoctors?.find(doctor => doctor._id === item.doctorId)?.name || "—"}
                       </td>
 
                       {/* DATE */}
